@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import rule from '@/components/rule' 
+import rule from '@/components/rule'
 export default {
   name: 'app',
   data () {
