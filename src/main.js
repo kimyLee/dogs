@@ -4,6 +4,19 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 
+/* eslint-disable */
+!(function(doc, win) {
+  var docEle = doc.documentElement,
+  evt = "onorientationchange" in window ? "orientationchange" : "resize",
+  fn = function() {
+      var width = docEle.clientWidth;
+      width && (docEle.style.fontSize = 10 * (width / 320) + "px");
+  };
+
+  win.addEventListener(evt, fn, false);
+  doc.addEventListener("DOMContentLoaded", fn, false);
+}(document, window))
+
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
