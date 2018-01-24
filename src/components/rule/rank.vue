@@ -1,7 +1,6 @@
 <template>
-  <div class="rule">
-    <div class="inner-box">
-    </div>
+  <div class="">
+    排行榜
   </div>
 </template>
 

@@ -1,7 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import home from '@/views/home'
-import ruler from '@/views/ruler'
+import ruler from '@/components/rule/ruler'
+import rank from '@/components/rule/rank'
+import myreward from '@/components/rule/myreward'
+import game from '@/views/game'
 
 Vue.use(Router)
 
@@ -13,17 +16,26 @@ export default new Router({
       component: home,
       children: [
         {
-          name: 'rule'
-          path: 'rule',
-          component: UserProfile
+          name: 'ruler',
+          path: 'ruler',
+          component: ruler
         },
         {
-          // 当 /user/:id/posts 匹配成功
-          // UserPosts 会被渲染在 User 的 <router-view> 中
-          path: 'posts',
-          component: UserPosts
+          name: 'rank',
+          path: 'rank',
+          component: rank
+        },
+        {
+          name: 'myreward',
+          path: 'myreward',
+          component: myreward
         }
       ]
+    },
+    {
+      path: '/game',
+      name: 'game',
+      component: game
     }
   ]
 })

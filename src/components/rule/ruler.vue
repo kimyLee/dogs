@@ -1,7 +1,9 @@
 <template>
-  <div class="rule">
-    <div class="inner-box">
-    </div>
+  <div class="">
+    <p>1. 根据萌犬不同</p>
+    <p></p>
+    <p></p>
+    <router-link class="tab-link" :to="{name: 'game'}">GO</router-link>
   </div>
 </template>
 

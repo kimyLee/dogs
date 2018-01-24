@@ -1,7 +1,6 @@
 <template>
-  <div class="rule">
-    <div class="inner-box">
-    </div>
+  <div class="reward">
+    我的奖品
   </div>
 </template>
 
