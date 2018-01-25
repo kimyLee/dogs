@@ -5,6 +5,7 @@ import ruler from '@/components/rule/ruler'
 import rank from '@/components/rule/rank'
 import myreward from '@/components/rule/myreward'
 import game from '@/views/game'
+import lottery from '@/views/lottery'
 
 Vue.use(Router)
 
@@ -36,6 +37,11 @@ export default new Router({
       path: '/game',
       name: 'game',
       component: game
+    },
+    {
+      path: '/lottery',
+      name: 'lottery',
+      component: lottery
     }
   ]
 })
