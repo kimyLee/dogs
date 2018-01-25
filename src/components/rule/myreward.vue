@@ -1,6 +1,7 @@
 <template>
   <div class="reward">
-    我的奖品
+     <p>1、"滕王阁幸福家"紫光礼盒1份</p>
+     <p class="no-reward">还没获得奖品哦<br>多多努力赢取大奖吧</p>
   </div>
 </template>
 
@@ -19,17 +20,18 @@ export default {
 </script>
 
 <style lang="scss">
-  .rule {
-    position: absolute;
-    padding: 2rem 1.5rem;
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-    .inner-box {
+  .reward {
+    text-align: left;
+    font-size: 1.6rem;
+    padding: 0 1.6rem;
+    color: #444;
+    // position: relative;
+    .no-reward {
       width: 100%;
-      height: 100%;
-      background: #fffade;
-      border-radius: 2rem 2rem 0 0;
+      left: 0;
+      text-align: center;
+      position: fixed;
+      top: 40%;
     }
   }
 </style>

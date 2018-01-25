@@ -42,26 +42,30 @@ export default {
       border-radius: 2rem 2rem 0 0;
     }
     .banner-title {
-      padding: 1.6rem;
+      padding: 1.6rem 0;
       text-align: center;
       .tab-link {
+        // font-weight: bold;
         display: inline-block;
         text-decoration: none;
-        height: 1.6rem;
-        line-height: 1.6rem;
-        font-size: 1.6rem;
-        margin: 0 1rem;
+        // height: 1.6rem;
+        // line-height: 1.6rem;
+        font-size: 2rem;
+        margin: 0 0.8rem;
+        color: #444;
       }
     }
     .slider {
       width: 0;
-      height: 1.6rem;
-      line-height: 1.6rem;
+      height: 2.2rem;
+      line-height: 2.2rem;
+      position: absolute;
+      margin-top: 0.3rem;
       display: inline-block;
-      border-right: 1px solid #ccc;
+      border-right: 1px solid #888;
     }
-    .router-link-active {
-      color: orange;
+    .tab-link.router-link-active {
+      color: #e95513;
     }
   }
 </style>

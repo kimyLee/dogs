@@ -1,9 +1,21 @@
 <template>
-  <div class="">
-    <p>1. 根据萌犬不同</p>
-    <p></p>
-    <p></p>
-    <router-link class="tab-link" :to="{name: 'game'}">GO</router-link>
+  <div class="ruler-intro">
+    <p>1、根据萌犬的不同颜色，一次选择对应颜色的福禄寿喜。</p>
+    <p>2、选择匹配的正确颜色越多，分数越多，加油吧！</p>
+    <p>3、单次8000分以上可获得一次抽奖机会，中奖后填写寄送信息，没人每天仅仅可抽奖2次，奖品丰厚，数量有限，加油冲分吧！</p>
+    <p>4、活动结束后，将赠送全国排名前二十位，寄送丰厚礼品。<br>
+    <span class="orange-text">第1名：红米手机 1台</span><br>
+    <span class="orange-text">第2名：高档压杆箱 1个</span><br>
+    <span class="orange-text">第3名：美的电压力锅 1套</span><br>
+    <span class="orange-text">4~20名榜单奖：滕王阁幸福家礼盒 1份</span>
+    </p>
+    <p>活动时间：<br>
+    <span class="orange-text">2018年2月1日—2月10日</span>
+    </p>
+    <p>本活动最终解释权归主办方所有。</p>
+    <div class="start-panel">
+      <router-link class="btn-link" :to="{name: 'game'}">GO</router-link>
+    </div>
   </div>
 </template>
 
@@ -22,17 +34,32 @@ export default {
 </script>
 
 <style lang="scss">
-  .rule {
-    position: absolute;
-    padding: 2rem 1.5rem;
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-    .inner-box {
+  .ruler-intro {
+    text-align: left;
+    font-size: 1.4rem;
+    padding: 0 1.6rem;
+    color: #444;
+    .orange-text {
+      color: #e95513;
+    }
+    .start-panel {
+      position: absolute;
+      bottom: 4.6rem;
+      left: 0;
       width: 100%;
-      height: 100%;
-      background: #fffade;
-      border-radius: 2rem 2rem 0 0;
+      text-align: center;
+    }
+    .btn-link {
+      display: inline-block;
+      width: 8.7rem;
+      height: 3.2rem;
+      line-height: 3.2rem;
+      background: #fc9808;
+      border-radius: 3.2rem;
+      text-decoration: none;
+      color: #fff;
+      // font-weight: bold;
+      font-size: 2.6rem;
     }
   }
 </style>

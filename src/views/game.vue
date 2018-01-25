@@ -7,7 +7,7 @@
     <!-- 倒计时 -->
       <div class="leftside">
         <div class="leftside-btn">
-          <span class="btn-text">倒{{score}}</span>
+          <span class="btn-text">倒计时</span>
           <span class="btn-text-time">{{time}}s</span>
         </div>
       </div>
@@ -29,20 +29,37 @@
         <span class="img-btn xi" @click.prevent="update('xidog')"><img src="~@/assets/img/xi.png"/></span>
       </div>
     </div>
-    <!-- 排行榜和我的奖品 -->
-    <!-- <div class="rightside">
-      <div class="rightside-btn">排行榜</div>
-      <div class="rightside-btn">
-        <span class="btn-text">我的<br>奖品</span>
+    <!-- 弹框 -->
+    <div class="my-dialog" v-show="showDialog">
+      <div class="dialog-head">
+        <img src="/dogs/static/img/caidai.png">
+        <span class="dialog-head-text">{{score}}<span style="font-size: 1.4rem">&nbsp;分</span></span>
       </div>
-    </div> -->
-    <!-- 按钮面板 -->
+      <!-- 成功 -->
+      <div class="dialog-box" v-show="score >= 8">
+        <p class="dialog-rank">全国排名 30</p>
+        <img class="loterry-button" @click.prevent="$router.push({name: 'lottery'})" src="/dogs/static/img/loterryBtn.png">
+        <div class="button-panel">
+          <span class="dialog-btn share">分享</span>
+          <span class="dialog-btn rank-list" @click.prevent="$router.push({name: 'rank'})">排行榜</span>
+        </div>
+      </div>
+      <!-- 失败 -->
+      <div class="dialog-box" v-show="score < 8">
+        <p class="dialog-fail">挑战失败</p>
+        <p class="dialog-fail small" >不要灰心，继续努力哦</p>
+        <div class="button-panel">
+          <!-- <span class="dialog-btn share">分享</span> -->
+          <span class="dialog-btn rank-list" @click.prevent="restart" style="font-size: 1.6rem">再来一局</span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'app',
+  name: 'game',
   data () {
     return {
       dogs: ['fudog', 'ludog', 'shoudog', 'xidog'],
@@ -51,7 +68,8 @@ export default {
       clickCount: 0,
       time: 10,
       score: 0,
-      gameStart: false
+      gameStart: false,
+      showDialog: false
     }
   },
   mounted () {
@@ -75,9 +93,11 @@ export default {
     },
     gameOver () {
       this.lock = true
-      alert('游戏结束，你获得了' + this.score + '分')
+      this.showDialog = true
+      // alert('游戏结束，你获得了' + this.score + '分')
     },
     restart () {
+      this.showDialog = false
       this.gameStart = false
       this.time = 10
       this.score = 0
@@ -128,6 +148,84 @@ export default {
     width: 100%;
     height: 100%;
     background: #ff1457;
+    // 弹窗样式
+    .my-dialog {
+      position: absolute;
+      z-index: 99;
+      top: 30%;
+      left: 0;
+      padding: 0 3.9rem;
+      box-sizing: border-box;
+      width: 100%;
+      .dialog-head {
+        text-align: center;
+        position: relative;
+        transform: translateY(35%);
+        .dialog-head-text {
+          color: #444;
+          display: inline-block;
+          font-size: 2rem;
+          line-height: 4.5rem;
+          position: absolute;
+          width: 100%;
+          left: 0;
+        }
+        img {
+          display: inline-block;
+          width: 70%;
+        }
+      }
+      .dialog-box {
+        width: 100%;
+        padding-bottom:2rem;
+        background: #fffade;
+        border-radius: 2rem;
+        text-align: center;
+      }
+      .dialog-rank {
+        font-size: 2rem;
+        margin: 0;
+        padding: 3rem 0 1.5rem 0;
+        color: #ba1a35;
+      }
+      .loterry-button {
+        width: 10.5rem;
+        display: inline-block;
+        margin-bottom: 1.5rem;
+      }
+      .button-panel {
+        width: 100%;
+        overflow: hidden;
+        padding: 0 2rem;
+        box-sizing: border-box;
+      }
+      .dialog-btn {
+        display: inline-block;
+        font-size: 1.8rem;
+        color: #e95513;
+        height: 2.4rem;
+        line-height: 2.4rem;
+        width: 7.5rem;
+        border:  2px solid #e95513;
+        border-radius: 2.4rem;
+      }
+      .share {
+        float: left;
+      }
+      .rank-list {
+        float: right;
+      }
+      .dialog-fail {
+        margin: 0;
+        padding: 5rem 0 0 0;
+        font-size: 2.2rem;
+        color: #444;
+        &.small {
+          padding: 1rem 0 4rem 0;
+          font-size: 1.8rem;
+        }
+      }
+    }
     .content-box {
       position: absolute;
       width: 100%;
@@ -180,18 +278,18 @@ export default {
     }
     // dogs
     .list-enter-active, .list-leave-active {
-      transition: all 1s;
+      transition: all .7s;
     }
      .list-leave-to {
       opacity: 0;
-      transform: translateX(30px);
+      transform: translateX(40px);
     }
     .list-left-enter-active, .list-left-leave-active {
-      transition: all 1s;
+      transition: all .7s;
     }
      .list-left-leave-to {
       opacity: 0;
-      transform: translateX(-30px);
+      transform: translateX(-40px);
     }
     .img-dog-panel {
       width: 100%;

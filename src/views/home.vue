@@ -5,26 +5,26 @@
 
     <!-- 排行榜和我的奖品 -->
     <div class="rightside">
-      <div class="rightside-btn">排行榜</div>
-      <div class="rightside-btn">
+      <div class="rightside-btn" @click.prevent="$router.push({name: 'rank'})">排行榜</div>
+      <div class="rightside-btn" @click.prevent="$router.push({name: 'myreward'})">
         <span class="btn-text">我的<br>奖品</span>
       </div>
     </div>
     <!-- 按钮面板 -->
-    <div class="option-panel">
+    <div class="option-panel" @click.prevent="$router.push({name: 'ruler'})">
       <span class="start-btn">挑战开始</span>
       <img class="logo-img" src="~@/assets/img/logo.png">
     </div>
 
     <!-- 规则面板 -->
-    <rule></rule>
+    <rule v-show="$route.path.indexOf('home/') > 0"></rule>
   </div>
 </template>
 
 <script>
 import rule from '@/components/rule'
 export default {
-  name: 'app',
+  name: 'home',
   data () {
     return {
     }

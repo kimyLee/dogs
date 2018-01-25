@@ -37,7 +37,7 @@ body {
 }
 
 #app {
-  font-family: 'PingFang SC', 'Microsoft Yahei', STHeitiSC-Light, Helvetica-Light, arial, sans-serif;
+  font-family: 'Microsoft Yahei', 'PingFang SC', STHeitiSC-Light, Helvetica-Light, arial, sans-serif;
   position: absolute;
   width: 100%;
   height: 100%;
