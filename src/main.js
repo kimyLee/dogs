@@ -18,6 +18,7 @@ import router from './router'
 }(document, window))
 
 Vue.config.productionTip = false
+// Vue.prototype.$domain = document.URL.indexOf('8081') >= 0 ? '/static' : '/dogs/static'
 
 /* eslint-disable no-new */
 new Vue({

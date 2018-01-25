@@ -14,7 +14,7 @@ exports.assetsPath = function (_path) {
 
 exports.assetsImgPath = function (_path) {
   const assetsSubDirectory = process.env.NODE_ENV === 'production'
-    ? '/dogs/' + config.build.assetsSubDirectory
+    ? 'dogs/' + config.build.assetsSubDirectory
     : config.dev.assetsSubDirectory
   return path.posix.join(assetsSubDirectory, _path)
 }
