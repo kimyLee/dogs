@@ -1,6 +1,17 @@
 <template>
   <div id="app">
-    <router-view />
+     <!-- 预加载 -->
+    <div class="loading" v-show="curProgress < 100">
+      <div class="loading-cycle">
+        <svg :width="60" :height="60" class="loading-svg">
+        <circle :cx="30" :cy="30" :r="20" stroke-width="10" stroke="#fed744" fill="none"></circle>
+        <circle :cx="30" :cy="30" :r="20" stroke-width="10" stroke="#d35155" fill="none"  :stroke-dasharray="circleDasharray"></circle>
+        </svg>
+        <br>
+        {{curProgress}}%
+      </div>
+    </div>
+    <router-view v-if="curProgress >= 100"/>
   </div>
 </template>
 
@@ -9,19 +20,97 @@ export default {
   name: 'app',
   data () {
     return {
+      progress: 0,
+      curProgress: 0,     // 加载进度
+      circleDasharray: 0, // 圆环长度
+      imgToalCount: 0,
+      notLoadImgCount: 0
     }
   },
   mounted () {
+    this.preLoad()
+    this.$nextTick(() => {
+      this.transionTarget()
+    })
+  },
+  watch: {
+    'notLoadImgCount' () {
+      this.progress = 100 - Math.round(this.notLoadImgCount / this.imgToalCount * 100)
+    }
   },
   methods: {
+    // 顺滑过渡 progress ，会通过计算属性模拟transition到达
+    transionTarget () {
+      if (this.curProgress >= 100) {
+        // this.afterLoad()
+        return
+      }
+      let time = this.curProgress < this.progress ? 5 : 30
+      if (this.curProgress < Math.max(30, this.progress)) {
+        this.curProgress++
+      } else {
+        this.curProgress = Math.max(30, this.progress)
+      }
+      this.circleDasharray = Math.round(this.curProgress / 100 * 2 * Math.PI * 20) + ' 1069'
+      setTimeout(() => {
+        this.transionTarget()
+      }, time)
+    },
+
+    // 预加载
+    preLoad () {
+      let imgs = [
+        'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/caidai.png',
+        'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/fu.png',
+        'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/lu.png',
+        'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png',
+        'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/xi.png',
+        'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/fudog.png',
+        'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/ludog.png',
+        'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shoudog.png',
+        'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/xidog.png',
+        'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/fudog_error.png',
+        'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/ludog_error.png',
+        'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shoudog_error.png',
+        'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/xidog_error.png',
+        'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/gamepage.png',
+        'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/horse.jpg',
+        'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/horse_active.jpg',
+        'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/last.jpg',
+        'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/logo.png',
+        'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/logo2.png',
+        'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/loterryBtn.png',
+        'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/lotteryBg.jpg',
+        'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/page1.png',
+        'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/rank1.png',
+        'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/rank2.png',
+        'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/rank3.png',
+        'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/smile.png',
+        'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/text.png'
+      ]
+      this.imgToalCount = imgs.length
+      this.notLoadImgCount = imgs.length
+      imgs.forEach(e => {
+        let img = new Image()
+        img.src = e
+        img.onload = () => {
+          this.notLoadImgCount--
+        }
+        img.onerror = () => {
+          this.notLoadImgCount--
+        }
+      })
+    }
   }
 }
 </script>
 
-<style>
+<style lang="scss">
 html {
   font-size: 62.5%;
+  user-select: none;
 }
+img { pointer-events: none; }
 
 body {
   margin: 0;
@@ -42,6 +131,32 @@ body {
   width: 100%;
   height: 100%;
 }
+
+.loading {
+  position: fixed;
+  background: #fff;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 999;
+  text-align: center;
+  .loading-cycle {
+    position: relative;
+    top: 50%;
+    margin-top: -1.5rem;
+  }
+  .loading-svg {
+    display: inline-block;
+    transform-origin: center;
+    transform-box: fill-box;
+    transform: rotate(-90deg);
+    cycle {
+      transition: all .4s ease;
+    }
+  }
+}
+
 @media (min-height: 668px) {
   body {
     background: #973134;

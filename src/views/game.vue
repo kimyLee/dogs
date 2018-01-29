@@ -1,7 +1,18 @@
 <template>
   <div class="game-page">
     <!-- 要保持背景图长宽比 -->
-    <img class="bg-img" src="~@/assets/img/gamepage.png">
+    <div id="canvas-container" class="canvas-container"></div>
+    <img  class="bg-img-top" src="/luckydogs/static/img/game-top.jpg">
+    <img class="bg-img-bottom" src="/luckydogs/static/img/game-bottom.jpg">
+    <!-- <img class="bg-img" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/gamepage.png"> -->
+    <!-- 云彩 -->
+    <transition name="fade">
+      <div v-show="appear">
+        <img class="bg-img-cloud1" src="/luckydogs/static/img/cloud1.png">
+        <img class="bg-img-cloud2" src="/luckydogs/static/img/cloud2.png">
+        <img class="bg-img-text" src="/luckydogs/static/img/game_text.png">
+      </div>
+    </transition>
     <!-- dogs -->
     <div class="content-box">
     <!-- 倒计时 -->
@@ -18,30 +29,36 @@
           :class="'order' + $index"
           v-for="(item, $index) in items"
           :key="item.time">
-          <img :src="'/dogs/static/img/' + item.dog + '.png'" :class="{'click-error': item.clickError}"/>
+          <!-- <img :src="'/luckydogs/static/img/' + item.dog + '.png'" :class="{'click-error': item.clickError}"/> -->
+          <img :src="'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/' + item.dog + '.png'" :class="{'click-error': item.clickError}"/>
         </span>
         </transition-group>
       </div>
       <div class="btns">
-        <span class="img-btn fu" @click.prevent="update('fudog')"><img src="~@/assets/img/fu.png"/></span>
+        <span class="img-btn fu" @click.prevent="update('fudog')"><img src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/fu.png"/></span>
+        <span class="img-btn lu" @click.prevent="update('ludog')"><img src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/lu.png"/></span>
+        <span class="img-btn shou" @click.prevent="update('shoudog')"><img src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png"/></span>
+        <span class="img-btn xi" @click.prevent="update('xidog')"><img src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/xi.png"/></span>
+        <!-- <span class="img-btn fu" @click.prevent="update('fudog')"><img src="~@/assets/img/fu.png"/></span>
         <span class="img-btn lu" @click.prevent="update('ludog')"><img src="~@/assets/img/lu.png"/></span>
         <span class="img-btn shou" @click.prevent="update('shoudog')"><img src="~@/assets/img/shou.png"/></span>
-        <span class="img-btn xi" @click.prevent="update('xidog')"><img src="~@/assets/img/xi.png"/></span>
+        <span class="img-btn xi" @click.prevent="update('xidog')"><img src="~@/assets/img/xi.png"/></span> -->
       </div>
     </div>
     <!-- 弹框 -->
     <div class="my-dialog" v-show="showDialog">
       <div class="dialog-head">
-        <img src="/dogs/static/img/caidai.png">
+        <img src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/caidai.png">
         <span class="dialog-head-text">{{score}}<span style="font-size: 1.4rem">&nbsp;分</span></span>
       </div>
       <!-- 成功 -->
       <div class="dialog-box" v-show="score >= 8">
         <p class="dialog-rank">全国排名 30</p>
-        <img class="loterry-button" @click.prevent="$router.push({name: 'lottery'})" src="/dogs/static/img/loterryBtn.png">
+        <!-- <img class="loterry-button" @click.prevent="$router.push({name: 'lottery'})" src="/luckydogs/static/img/loterryBtn.png"> -->
+        <div @click="jumpLottery" class="loterry-button-hover"><img class="loterry-button"  src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/loterryBtn.png"></div>
         <div class="button-panel">
-          <span class="dialog-btn share">分享</span>
-          <span class="dialog-btn rank-list" @click.prevent="$router.push({name: 'rank'})">排行榜</span>
+          <!-- <span class="dialog-btn share">分享</span> -->
+          <span class="dialog-btn rank-list" @click.prevent="$router.push({name: $route.name, query: {tab: 'rank'}})">排行榜</span>
         </div>
       </div>
       <!-- 失败 -->
@@ -54,14 +71,33 @@
         </div>
       </div>
     </div>
+    <!-- 规则面板 -->
+    <rule v-show="$route.query.tab"></rule>
   </div>
 </template>
 
 <script>
+import rule from '@/components/rule'
+import Fireworks from '@/lib/firework'
+/* eslint-disable */
+let bounceEaseOut = (t, b, c, d) => {
+  if ((t /= d) < (1 / 2.75)) {
+      return c * (7.5625 * t * t) + b;
+  } else if (t < (2 / 2.75)) {
+      return c * (7.5625 * (t -= (1.5 / 2.75)) * t + .75) + b;
+  } else if (t < (2.5 / 2.75)) {
+      return c * (7.5625 * (t -= (2.25 / 2.75)) * t + .9375) + b;
+  } else {
+      return c * (7.5625 * (t -= (2.625 / 2.75)) * t + .984375) + b;
+  }
+}
+let rand = function(rMi, rMa){return ~~((Math.random()*(rMa-rMi+1))+rMi);}
+/* eslint-enable */
 export default {
   name: 'game',
   data () {
     return {
+      appear: false,
       dogs: ['fudog', 'ludog', 'shoudog', 'xidog'],
       items: [],
       lock: false,
@@ -69,16 +105,72 @@ export default {
       time: 10,
       score: 0,
       gameStart: false,
-      showDialog: false
+      showDialog: false,
+      // 掉落相关参数
+      touchEarth: false,
+      movetion: {start: 0, begin: 0, end: 200, during: 50},
+      target: '',
+      firework: '',
+      fireworkTimer: ''
     }
   },
+  components: {
+    rule
+  },
+  beforeDestroy () {
+    clearInterval(this.fireworkTimer)
+  },
   mounted () {
+    // 初始化狗狗
     let time = 1
     this.items = this.dogs.map((e) => {
       return {dog: e, time: time++, clickError: false}
     })
+
+    // 初始化掉落进场
+    this.target = this.$el.querySelector('.bg-img-top')
+    window.tarHeight = this.target.style.Height
+    setTimeout(() => {
+      this.dropdown()
+    }, 500)
+
+    let winW = window.innerWidth
+    let winY = window.innerHeight * 0.45
+    setTimeout(() => {
+      this.appear = true
+      this.firework = new Fireworks()
+      this.fireworkTimer = setInterval(() => {
+        this.firework.createFireworks(rand(winW / 2 - 50, winW / 2 + 50), winY, rand(50, winW - 50), rand(50, winY / 2) - 50)
+        this.firework.createFireworks(rand(winW / 2 - 50, winW / 2 + 50), winY, rand(50, winW - 50), rand(50, winY / 2) - 50)
+      }, 1200)
+    }, 1000)
   },
   methods: {
+    // 掉落函数
+    dropdown () {
+      let dis = bounceEaseOut(this.movetion.start, this.movetion.begin, this.movetion.end, this.movetion.during)
+      // 执行动画
+      if (!this.touchEarth && dis >= 200) {
+        this.touchEarth = true
+      }
+      if (this.target) {
+        this.target.style.transform = `scaleY(${dis / 200})`
+        // this.target.style.transform = `translateY(${dis - 200}px)`
+        // if (this.touchEarth) {
+        //   this.target.style.transform = `translateY(${dis - 200}px) scaleY(${(window.tarHeight + 200 - dis) / window.tarHeight})`
+        //   // this.target.style.Height = window.tarHeight + 200 - dis
+        // } else {
+        //   this.target.style.transform = `translateY(${dis - 200}px)`
+        // }
+      }
+      this.movetion.start++
+      if (this.movetion.start < this.movetion.during) {
+        requestAnimationFrame(this.dropdown)
+      }
+    },
+    jumpLottery () {
+      this.$router.push({name: 'lottery'})
+    },
     // 场景计时
     renderScence () {
       this.time--
@@ -152,7 +244,7 @@ export default {
     .my-dialog {
       position: absolute;
       z-index: 99;
-      top: 30%;
+      top: 10%;
       left: 0;
       padding: 0 3.9rem;
       box-sizing: border-box;
@@ -188,10 +280,14 @@ export default {
         padding: 3rem 0 1.5rem 0;
         color: #ba1a35;
       }
+      .loterry-button-hover {
+        -webkit-tap-highlight-color: transparent;
+      }
       .loterry-button {
         width: 10.5rem;
         display: inline-block;
         margin-bottom: 1.5rem;
+        -webkit-tap-highlight-color: transparent;
       }
       .button-panel {
         width: 100%;
@@ -208,6 +304,7 @@ export default {
         width: 7.5rem;
         border:  2px solid #e95513;
         border-radius: 2.4rem;
+        -webkit-tap-highlight-color: transparent;
       }
       .share {
         float: left;
@@ -226,6 +323,13 @@ export default {
         }
       }
     }
+    .canvas-container {
+      position: absolute;
+      z-index: 99999;
+      width: 100%;
+      height: 40%;
+      // background: rgba(255, 255, 255, 0.5);
+    }
     .content-box {
       position: absolute;
       width: 100%;
@@ -234,13 +338,46 @@ export default {
       left: 0;
       z-index: 1;
     }
-    .bg-img {
+    .bg-img-top {
       position: absolute;
       top: 0;
-      left: 50%;
-      height: 100%;
-      transform: translateX(-50%);
+      width: 100%;
+      height: 44.5%;
       max-height: 690px;
+      transform-origin: 50% 100%;
+      transform: scaleY(0);
+    }
+    .bg-img-bottom {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      // left: 50%;
+      height: 56%;
+      // transform: translateX(-50%);
+      max-height: 690px;
+    }
+    .bg-img-cloud1 {
+      position: absolute;
+      left: 4rem;
+      top: 10rem;
+      width: 11rem;
+      // perspective: 200px;
+      animation: cloud 4s ease-in-out infinite alternate;
+    }
+    .bg-img-cloud2 {
+      position: absolute;
+      right: 3rem;
+      top: 7rem;
+      width: 8.6rem;
+      perspective: 200px;
+      animation: cloud2 5s ease-in-out infinite alternate;
+    }
+    .bg-img-text {
+      position: absolute;
+      width: 26rem;
+      left: 50%;
+      margin-left: -13rem;
+      top: 1.5rem;
     }
     .btns {
       position: absolute;
@@ -252,6 +389,7 @@ export default {
       width: 6.7rem;
       height: 6.7rem;
       display: inline-block;
+      -webkit-tap-highlight-color: transparent;
       img{
         width: 100%;
       }
@@ -294,7 +432,7 @@ export default {
     .img-dog-panel {
       width: 100%;
       overflow: hidden;
-      margin-top: 22rem;
+      margin-top: 20rem;
       // text-align: center;
     }
     .img-dog {
@@ -360,9 +498,24 @@ export default {
       }
     }
   }
+  // 出场过渡效果
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity 2s;
+  }
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+  }
   @keyframes mymove {
-    from {transform: translateX(-10px);}
+    from {transform: translateX(-10px); }
     to {transform: translateX(10px);}
+  }
+  @keyframes cloud {
+    from {transform: translateX(-30px) }
+    to {transform: translateX(30px)}
+  }
+  @keyframes cloud2 {
+    from {transform: translateX(30px)}
+    to {transform: translateX(-30px)}
   }
 
 </style>

@@ -1,9 +1,12 @@
 <template>
   <div class="lottery-page">
     <!-- 要保持背景图长宽比 -->
-    <img class="bg-img" src="/dogs/static/img/lotteryBg.jpg">
-    <img class="logo-img" src="/dogs/static/img/text.png">
-    <img class="logo-bottom-img" src="/dogs/static/img/logo2.png">
+    <img class="bg-img" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/lotteryBg.jpg">
+    <img class="logo-img" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/text.png">
+    <img class="logo-bottom-img" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/logo2.png">
+    <!-- <img class="bg-img" src="/luckydogs/static/img/lotteryBg.jpg">
+    <img class="logo-img" src="/luckydogs/static/img/text.png">
+    <img class="logo-bottom-img" src="/luckydogs/static/img/logo2.png"> -->
     <!-- loterry-panel -->
     <div class="loterry-panel" v-show="!result">
       <div v-for="item in blocks" class="block-item" :key="item.index" :class="{'turn': item.turn}">
@@ -38,7 +41,7 @@
         </div>
         <!-- 未中奖 -->
         <div style="text-align: center" v-show="result.reward === '谢谢参与'">
-          <img class="not-reward" src="/dogs/static/img/smile.png">
+          <img class="not-reward" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/smile.png">
           <p class="reward-name-small" style="font-size: 1.8rem;">哎呀，与幸福擦肩而过<br>非常抱歉没有中奖<br>明天要继续加油哦！</p>
           <div class="operation">
             <span class="operation-btn" @click.prevent="$router.push({name: 'game'})">再来一局</span>
@@ -197,7 +200,7 @@ export default {
           this.blocks[i].turn = true
           setTimeout(() => {
             this.result = this.blocks[i]
-          }, 1000)
+          }, 2000)
           break
         }
       }
@@ -275,6 +278,7 @@ export default {
         line-height: 2.6rem;
         border: 1px solid #444;
         border-radius: 0.5rem;
+        -webkit-tap-highlight-color: transparent;
       }
       .not-reward {
         display: inline-block;
@@ -346,7 +350,8 @@ export default {
       float: left;
       margin: 1%;
       .active {
-        background: url(~@/assets/img/horse_active.jpg);
+        // background: url(~@/assets/img/horse_active.jpg);
+        background: url(http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/horse_active.jpg);
         background-size: 100%;
       }
       .click-btn {
@@ -360,11 +365,13 @@ export default {
       position: absolute;
       width: 100%;
       height: 100%;
-        background: url(~@/assets/img/horse.jpg);
+        // background: url(~@/assets/img/horse.jpg);
+        background: url(http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/horse.jpg);
         background-size: 100%;
         transform: rotateY(0);
         backface-visibility: hidden;
         transition: transform .4s ease-in-out;
+        -webkit-tap-highlight-color: transparent;
       }
     .turn .front{
       transform: rotateY(180deg);

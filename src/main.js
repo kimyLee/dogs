@@ -5,6 +5,7 @@ import App from './App'
 import router from './router'
 
 /* eslint-disable */
+window.onload = function() { document.documentElement.style.webkitTouchCallout='none'; };
 !(function(doc, win) {
   var docEle = doc.documentElement,
   evt = "onorientationchange" in window ? "orientationchange" : "resize",

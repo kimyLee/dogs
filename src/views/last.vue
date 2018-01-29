@@ -1,8 +1,8 @@
 <template>
   <div class="last-page">
     <!-- 要保持背景图长宽比 -->
-    <img class="bg-img" src="~@/assets/img/last.jpg">
-     <img class="logo-bottom-img" src="/dogs/static/img/logo2.png">
+    <img class="bg-img" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/last.jpg">
+     <img class="logo-bottom-img" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/logo2.png">
 
     <!-- 排行榜和我的奖品 -->
     <div class="rightside">
@@ -63,6 +63,7 @@ export default {
       margin-bottom: 1rem;
       font-size: 1.4rem;
       position: relative;
+      -webkit-tap-highlight-color: transparent;
       &::after {
         content: '';
         width: 0;

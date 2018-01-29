@@ -1,9 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import home from '@/views/home'
-import ruler from '@/components/rule/ruler'
-import rank from '@/components/rule/rank'
-import myreward from '@/components/rule/myreward'
 import game from '@/views/game'
 import lottery from '@/views/lottery'
 import info from '@/views/info'
@@ -16,24 +13,24 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: home,
-      children: [
-        {
-          name: 'ruler',
-          path: 'home/ruler',
-          component: ruler
-        },
-        {
-          name: 'rank',
-          path: 'home/rank',
-          component: rank
-        },
-        {
-          name: 'myreward',
-          path: 'home/myreward',
-          component: myreward
-        }
-      ]
+      component: home
+      // children: [
+      //   {
+      //     name: 'ruler',
+      //     path: 'home/ruler',
+      //     component: ruler
+      //   },
+      //   {
+      //     name: 'rank',
+      //     path: 'home/rank',
+      //     component: rank
+      //   },
+      //   {
+      //     name: 'myreward',
+      //     path: 'home/myreward',
+      //     component: myreward
+      //   }
+      // ]
     },
     {
       path: '/game',
