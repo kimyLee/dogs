@@ -31,7 +31,7 @@
     </div>
     <div class="lottery-dialog" v-show="result">
       <div class="dialog-box">
-        <div class="close"><span class="close-btn">×</span></div>
+        <!-- <div class="close"><span class="close-btn">×</span></div> -->
         <!-- 中奖 -->
         <div v-show="result.reward !== '谢谢参与'">
           <p class="reward-name">{{result.reward}}</p>
@@ -99,6 +99,7 @@ export default {
   methods: {
     beginLoterry () {
       this.start()
+      console.log(this.score)
       axios.post('/Index/GetDraw', {
         DrawType: 1,
         Score: this.score
@@ -109,14 +110,27 @@ export default {
             let data = res.Data
             if (data.IsWin) {
               this.$rewards.push(data.AwardRecord)
-              this.blocks[1].reward = data.AwardRecord.AwardName.slice(0, 4)
-              setTimeout(() => {
-                this.wonIndex = 2
-                this.stop()
-              }, 2000)
+              // 找到抽中奖品 如果是雨伞或者浴衣
+              if (data.AwardId === 6 || data.AwardId === 9) {
+                this.blocks[7].reward = data.AwardName
+                setTimeout(() => {
+                  this.wonIndex = 6
+                  this.stop()
+                }, 2000)
+              } else {
+                setTimeout(() => {
+                  this.wonIndex = data.AwardId
+                  this.stop()
+                }, 2000)
+              }
+              // this.blocks[1].reward = data.AwardRecord.AwardName.slice(0, 4)
+              // setTimeout(() => {
+              //   this.wonIndex = 2
+              //   this.stop()
+              // }, 2000)
             } else {
               setTimeout(() => {
-                this.wonIndex = 1
+                this.wonIndex = 6
                 this.stop()
               }, 2000)
             }
@@ -126,6 +140,10 @@ export default {
         })
         .catch((error) => {
           console.log(error)
+          setTimeout(() => {
+            this.wonIndex = 6
+            this.stop()
+          }, 2000)
         })
     },
     begin () {
@@ -178,7 +196,7 @@ export default {
     },
     drawingCallback (index, Time) {
       this.activeIndex = index
-      console.log(index, Time)
+      // console.log(index, Time)
     },
     drawing (shouldContinute, drawTime) {
       let self = this

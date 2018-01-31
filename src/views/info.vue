@@ -16,6 +16,18 @@
           <span class="submit-btn" @click.prevent="subMit">提交</span>
         </div>
     </div>
+    <!-- 保存成功弹窗 -->
+    <!-- <div class="lottery-dialog" v-show="saveSuccess">
+      <div class="dialog-box">
+        <div style="text-align: center" v-show="result.reward === '谢谢参与'">
+          <img class="not-reward" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/smile.png">
+          <p class="reward-name-small" style="font-size: 1.8rem;">哎呀，与幸福擦肩而过<br>非常抱歉没有中奖<br>明天要继续加油哦！</p>
+          <div class="operation">
+            <span class="operation-btn" @click.prevent="$router.push({name: 'game'})">再来一局</span>
+          </div>
+        </div>
+      </div>
+    </div> -->
   </div>
 </template>
 
@@ -68,7 +80,7 @@ export default {
           }
         })
         .catch((error) => {
-          alert('测试错误弹出：' + error)
+          alert('发生了一些错误：' + error)
         })
     }
   }

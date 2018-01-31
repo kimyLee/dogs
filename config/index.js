@@ -11,7 +11,17 @@ module.exports = {
     assetsSubDirectory: 'luckydogs/static',
     assetsPublicPath: '/',
     proxyTable: {
-      
+      '/Index/GetDraw': {
+        target: 'http://adorabledog.pandoraxbox.com',
+        changeOrigin: true
+      },
+      '/API/Login': {
+        target: 'http://oauth.pandoraxbox.com',
+        changeOrigin: true
+        // pathRewrite: {
+        //   '^http://10.5.33.26:8081': ''   //需要rewrite重写的,
+        // } 
+      },
     },
 
     // Various Dev Server settings
