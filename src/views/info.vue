@@ -8,9 +8,9 @@
     <img class="logo-img" src="/luckydogs/static/img/text.png">
     <img class="logo-bottom-img" src="/luckydogs/static/img/logo2.png"> -->
     <div class="input-panel">
-        <span class="input-item"><span class="input-item-title">姓名</span><input type="text" /></span>
-        <span class="input-item"><span class="input-item-title">电话</span><input type="text" /></span>
-        <span class="input-item"><span class="input-item-title">地址</span><input type="text" /></span>
+        <span class="input-item"><span class="input-item-title">姓名</span><input type="text"  v-model="name" /></span>
+        <span class="input-item"><span class="input-item-title">电话</span><input type="text"  v-model="phone" /></span>
+        <span class="input-item"><span class="input-item-title">地址</span><input type="text"  v-model="address" /></span>
         <div style="text-align: center">
           <span class="submit-btn" @click.prevent="goback" style="margin-right: 2rem">返回</span>
           <span class="submit-btn" @click.prevent="subMit">提交</span>
@@ -76,7 +76,10 @@ export default {
             if (data.Statue) {
               this.$router.push({name: 'last'})
             } else {
-              return Promise.reject(data.ErrorMsg)
+              if (res.msg === 'saveed') {
+                alert('您已提交过信息，不能重复提交')
+              }
+              return
             }
           } else {
             return Promise.reject(res)
@@ -84,7 +87,7 @@ export default {
         })
         .catch((error) => {
           console.log(error)
-          alert('已提交信息或未知错误')
+          alert('未知错误')
         })
     }
   }
@@ -169,6 +172,11 @@ export default {
       border: 1px solid #444;
       border-radius: 0.5rem;
       -webkit-tap-highlight-color: transparent;
+    }
+    @media (max-width: 340px) {
+      .submit-btn {
+        width: 8rem;
+      }
     }
   }
 </style>

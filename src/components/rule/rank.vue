@@ -24,8 +24,8 @@
         </ul>
     </div>
      <div class="start-panel">
-      <router-link class="btn-link empty" :to="{name: $route.name}" @click.prevent.stop>返回</router-link>
-      <router-link class="btn-link" :to="{name: 'game'}" @click.prevent.stop><span style="">GO</span></router-link>
+      <router-link class="btn-link" :class="{'empty': $route.name !== 'game'}" :to="{name: $route.name}" @click.prevent.stop>返回</router-link>
+      <router-link class="btn-link" v-show="$route.name !== 'game'" :to="{name: 'game'}" @click.prevent.stop><span style="">GO</span></router-link>
     </div>
   </div>
 </template>
@@ -38,29 +38,29 @@ export default {
     return {
       personInfo: {
         // pic: '/luckydogs/static/img/fu.png',
-        pic: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/home.jpg',
-        name: 'hello',
-        bestScore: '100',
-        rank: 30
+        // pic: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/home.jpg',
+        // name: 'hello',
+        // bestScore: '100',
+        // rank: 30
       },
       rankList: [
-        { Sort: 1, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/fu.png', UserName: '只想做安静的书呆子', score: 199 },
-        { Sort: 2, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/xi.png', UserName: '我可能是遗落地球的小仙女', score: 198 },
-        { Sort: 3, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/lu.png', UserName: '来呀被我伤害呀', score: 197 },
-        { Sort: 4, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png', UserName: '小龙虾', score: 196 },
-        { Sort: 4, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png', UserName: '小龙虾', score: 196 },
-        { Sort: 4, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png', UserName: '小龙虾', score: 196 },
-        { Sort: 4, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png', UserName: '小龙虾', score: 196 },
-        { Sort: 4, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png', UserName: '小龙虾', score: 196 },
-        { Sort: 4, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png', UserName: '小龙虾', score: 196 },
-        { Sort: 4, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png', UserName: '小龙虾', score: 196 },
-        { Sort: 4, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png', UserName: '小龙虾', score: 196 },
-        { Sort: 4, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png', UserName: '小龙虾', score: 196 },
-        { Sort: 4, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png', UserName: '小龙虾', score: 196 },
-        { Sort: 4, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png', UserName: '小龙虾', score: 196 },
-        { Sort: 4, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png', UserName: '小龙虾', score: 196 },
-        { Sort: 4, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png', UserName: '小龙虾', score: 196 },
-        { Sort: 5, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/fu.png', UserName: 'kimmy', score: 195 }
+        // { Sort: 1, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/fu.png', UserName: '只想做安静的书呆子', score: 199 },
+        // { Sort: 2, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/xi.png', UserName: '我可能是遗落地球的小仙女', score: 198 },
+        // { Sort: 3, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/lu.png', UserName: '来呀被我伤害呀', score: 197 },
+        // { Sort: 4, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png', UserName: '小龙虾', score: 196 },
+        // { Sort: 4, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png', UserName: '小龙虾', score: 196 },
+        // { Sort: 4, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png', UserName: '小龙虾', score: 196 },
+        // { Sort: 4, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png', UserName: '小龙虾', score: 196 },
+        // { Sort: 4, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png', UserName: '小龙虾', score: 196 },
+        // { Sort: 4, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png', UserName: '小龙虾', score: 196 },
+        // { Sort: 4, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png', UserName: '小龙虾', score: 196 },
+        // { Sort: 4, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png', UserName: '小龙虾', score: 196 },
+        // { Sort: 4, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png', UserName: '小龙虾', score: 196 },
+        // { Sort: 4, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png', UserName: '小龙虾', score: 196 },
+        // { Sort: 4, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png', UserName: '小龙虾', score: 196 },
+        // { Sort: 4, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png', UserName: '小龙虾', score: 196 },
+        // { Sort: 4, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png', UserName: '小龙虾', score: 196 },
+        // { Sort: 5, UserLogo: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/fu.png', UserName: 'kimmy', score: 195 }
         // { Sort: 1, UserLogo: '/luckydogs/static/img/fu.png', UserName: '只想做安静的书呆子', score: 199 },
         // { Sort: 2, UserLogo: '/luckydogs/static/img/xi.png', UserName: '我可能是遗落地球的小仙女', score: 198 },
         // { Sort: 3, UserLogo: '/luckydogs/static/img/lu.png', UserName: '来呀被我伤害呀', score: 197 },

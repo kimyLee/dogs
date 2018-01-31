@@ -1,7 +1,7 @@
 <template>
   <div class="game-page">
     <!-- 要保持背景图长宽比 -->
-    <div id="canvas-container" class="canvas-container"></div>
+    <!-- <div id="canvas-container" class="canvas-container"></div> -->
     <img  class="bg-img-top" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/game-top.jpg">
     <img class="bg-img-bottom" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/game-bottom.jpg">
     <!-- <img class="bg-img" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/gamepage.png"> -->
@@ -10,6 +10,8 @@
       <div v-show="appear">
         <img class="bg-img-cloud1" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/cloud1.png">
         <img class="bg-img-cloud2" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/cloud2.png">
+        <!-- <img class="bg-img-fire" src="/luckydogs/static/img/fire.png"> -->
+        <img class="bg-img-fire" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/fire.png">
         <img class="bg-img-text" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/game_text.png">
       </div>
     </transition>
@@ -53,7 +55,7 @@
       </div>
       <!-- 成功 -->
       <div class="dialog-box" v-show="score >= 8000">
-        <p class="dialog-rank">全国排名 30</p>
+        <!-- <p class="dialog-rank">全国排名 30</p> -->
         <!-- <img class="loterry-button" @click.prevent="$router.push({name: 'lottery'})" src="/luckydogs/static/img/loterryBtn.png"> -->
         <div @click="jumpLottery" class="loterry-button-hover"><img class="loterry-button"  src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/loterryBtn.png"></div>
         <div class="button-panel">
@@ -67,6 +69,7 @@
         <p class="dialog-fail small" >不要灰心，继续努力哦</p>
         <div class="button-panel">
           <!-- <span class="dialog-btn share">分享</span> -->
+          <span class="dialog-btn" style="float:left;" @click.prevent="$router.push({name: $route.name, query: {tab: 'rank'}})">排行榜</span>
           <span class="dialog-btn rank-list" @click.prevent="restart" style="font-size: 1.6rem">再来一局</span>
         </div>
       </div>
@@ -77,9 +80,10 @@
 </template>
 
 <script>
-// import axios from 'axios'
+import Qs from 'qs'
+import axios from 'axios'
 import rule from '@/components/rule'
-import Fireworks from '@/lib/firework'
+// import Fireworks from '@/lib/firework'
 /* eslint-disable */
 let bounceEaseOut = (t, b, c, d) => {
   if ((t /= d) < (1 / 2.75)) {
@@ -103,7 +107,7 @@ export default {
       items: [],
       lock: false,
       clickCount: 0,
-      time: 60,
+      time: 20,
       score: 0,
       gameStart: false,
       showDialog: false,
@@ -139,11 +143,11 @@ export default {
     let winY = window.innerHeight * 0.45
     setTimeout(() => {
       this.appear = true
-      this.firework = new Fireworks()
-      this.fireworkTimer = setInterval(() => {
-        this.firework.createFireworks(rand(winW / 2 - 50, winW / 2 + 50), winY, rand(50, winW - 50), rand(50, winY / 2) - 50)
-        this.firework.createFireworks(rand(winW / 2 - 50, winW / 2 + 50), winY, rand(50, winW - 50), rand(50, winY / 2) - 50)
-      }, 1200)
+      // this.firework = new Fireworks()
+      // this.fireworkTimer = setInterval(() => {
+      //   this.firework.createFireworks(rand(winW / 2 - 50, winW / 2 + 50), winY, rand(50, winW - 50), rand(50, winY / 2) - 50)
+      //   this.firework.createFireworks(rand(winW / 2 - 50, winW / 2 + 50), winY, rand(50, winW - 50), rand(50, winY / 2) - 50)
+      // }, 1200)
     }, 1000)
   },
   methods: {
@@ -169,6 +173,22 @@ export default {
         requestAnimationFrame(this.dropdown)
       }
     },
+    updateScore () {
+      let params = Qs.stringify({
+        score: this.score
+      })
+      axios.post('/Index/SaveScore', params, {headers: { 'Content-Type': 'application/x-www-form-urlencoded' }})
+        .then((result) => {
+          let res = result.data
+          if (res.Code === 1) { 
+          } else {
+            return Promise.reject(res)
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
     jumpLottery () {
       this.$router.push({name: 'lottery', query: {score: this.score}})
     },
@@ -187,12 +207,13 @@ export default {
     gameOver () {
       this.lock = true
       this.showDialog = true
+      this.updateScore()
       // alert('游戏结束，你获得了' + this.score + '分')
     },
     restart () {
       this.showDialog = false
       this.gameStart = false
-      this.time = 60
+      this.time = 20
       this.score = 0
       this.lock = false
     },
@@ -215,7 +236,7 @@ export default {
         this.clickCount = this.clickCount > 100 ? 0 : (this.clickCount + 1)
         this.items.splice(0, 0, ele)
         this.items.splice(this.items.length - 1, 1)
-        this.score = this.score + 200
+        this.score = this.score + 600
       } else {
         this.lock = true
         target.clickError = true
@@ -225,7 +246,7 @@ export default {
         setTimeout(() => {
           this.lock = false
           target.clickError = false
-        }, 1000)
+        }, 500)
       }
     },
     add () {
@@ -286,6 +307,7 @@ export default {
       }
       .loterry-button {
         width: 10.5rem;
+        margin-top: 3rem;
         display: inline-block;
         margin-bottom: 1.5rem;
         -webkit-tap-highlight-color: transparent;
@@ -370,8 +392,15 @@ export default {
       right: 3rem;
       top: 7rem;
       width: 8.6rem;
-      perspective: 200px;
+      // perspective: 200px;
       animation: cloud2 5s ease-in-out infinite alternate;
+    }
+    .bg-img-fire {
+      position: absolute;
+      top: 4rem;
+      left: 1.5rem;
+      width: 7.5rem;
+      animation: fire 15s linear infinite;
     }
     .bg-img-text {
       position: absolute;
@@ -517,6 +546,65 @@ export default {
   @keyframes cloud2 {
     from {transform: translateX(30px)}
     to {transform: translateX(-30px)}
+  }
+  @keyframes fire {
+    from {transform: rotate(0)}
+    to {transform: rotate(360deg)}
+  }
+  @media (max-width: 340px) {
+    .game-page {
+      .bg-img-cloud1 {
+        position: absolute;
+        left: 4rem;
+        top: 10rem;
+        width: 8rem;
+        // perspective: 200px;
+        animation: cloud 4s ease-in-out infinite alternate;
+      }
+      .bg-img-cloud2 {
+        position: absolute;
+        right: 3rem;
+        top: 7rem;
+        width: 6rem;
+        // perspective: 200px;
+        animation: cloud2 5s ease-in-out infinite alternate;
+      }
+      .bg-img-fire {
+        position: absolute;
+        top: 4rem;
+        left: 1.5rem;
+        width: 6.5rem;
+        animation: fire 15s linear infinite;
+      }
+      .img-dog-panel {
+        width: 100%;
+        overflow: hidden;
+        margin-top: 18rem;
+        // text-align: center;
+      }
+      .img-btn {
+        width: 5.7rem;
+        height: 5.7rem;
+        display: inline-block;
+        -webkit-tap-highlight-color: transparent;
+        img{
+          width: 100%;
+        }
+      }
+      .my-dialog {
+        .dialog-btn {
+          display: inline-block;
+          font-size: 1.8rem;
+          height: 2.4rem;
+          line-height: 2.4rem;
+          width: 6.5rem;
+          border:  2px solid #e95513;
+          border-radius: 2.4rem;
+          -webkit-tap-highlight-color: transparent;
+        }
+      }
+      
+    }
   }
 
 </style>

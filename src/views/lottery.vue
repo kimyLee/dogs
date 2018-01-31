@@ -12,9 +12,9 @@
       <div v-for="item in blocks" class="block-item" :key="item.index" :class="{'turn': item.turn}">
         <!-- 正面 -->
         <div class="front block-item-page"
-            @click.prevent="beginLoterry"
+            
             :class="{'click-btn': item.index === 9, 'active': activeIndex === item.index}">
-            <div v-if="item.index === 9" class="block-text">
+            <div v-if="item.index === 9" class="block-text" @click.prevent="beginLoterry">
               <div class="block-text-top" style="height: 50%;">立即</div>
               <div class="block-text-bottom" style="height: 50%;">抽奖</div>
             </div>
@@ -45,6 +45,7 @@
           <img class="not-reward" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/smile.png">
           <p class="reward-name-small" style="font-size: 1.8rem;">哎呀，与幸福擦肩而过<br>非常抱歉没有中奖<br>明天要继续加油哦！</p>
           <div class="operation">
+            <span class="operation-btn" style="margin-right: 1rem;"   @click.prevent="$router.push({name: 'home'})">返回首页</span>
             <span class="operation-btn" @click.prevent="$router.push({name: 'game'})">再来一局</span>
           </div>
         </div>
@@ -117,7 +118,10 @@ export default {
           if (res.Code === 1) {
             let data = res.Data
             if (data.IsWin) {
-              this.$rewards.push(data.AwardRecord)
+              if (!window.$rewards) {
+                window.$rewards = []
+              }
+              window.$rewards.push(data.AwardRecord)
               let reward = data.AwardRecord
               // 找到抽中奖品 如果是雨伞或者浴衣
               if (reward.AwardId === 6 || reward.AwardId === 9) {
@@ -139,7 +143,12 @@ export default {
               // }, 2000)
             } else {
               setTimeout(() => {
-                this.wonIndex = 6
+                let index = (Math.random() * 9) << 0
+                if (index === 4) {
+                  index = 5
+                }
+                this.blocks[index].reward = '谢谢参与'
+                this.wonIndex = this.blocks[index].index
                 this.stop()
               }, 2000)
             }
@@ -150,7 +159,12 @@ export default {
         .catch((error) => {
           console.log(error)
           setTimeout(() => {
-            this.wonIndex = 6
+            let index = (Math.random() * 9) << 0
+            if (index === 4) {
+              index = 5
+            }
+            this.blocks[index].reward = '谢谢参与'
+            this.wonIndex = this.blocks[index].index
             this.stop()
           }, 2000)
         })
@@ -338,7 +352,7 @@ export default {
         margin: 2rem 0;
         display: inline-block;
         font-size: 1.8rem;
-        width: 12rem;
+        width: 8rem;
         height: 2.6rem;
         line-height: 2.6rem;
         border: 1px solid #444;

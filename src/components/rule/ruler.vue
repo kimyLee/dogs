@@ -14,8 +14,8 @@
     </p>
     <p>本活动最终解释权归主办方所有。</p>
     <div class="start-panel">
-      <router-link class="btn-link empty" :to="{name: $route.name}" @click.prevent.stop>返回</router-link>
-      <router-link class="btn-link" :to="{name: 'game'}" @click.prevent.stop><span style="">GO</span></router-link>
+      <router-link class="btn-link" :class="{'empty': $route.name !== 'game'}" :to="{name: $route.name}" @click.prevent.stop>返回</router-link>
+      <router-link class="btn-link" v-show="$route.name !== 'game'" :to="{name: 'game'}" @click.prevent.stop><span style="">GO</span></router-link>
     </div>
   </div>
 </template>

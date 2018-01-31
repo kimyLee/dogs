@@ -124,5 +124,18 @@ export default {
         margin-right: 2.8rem;
       }
     }
+    @media (max-width: 359px) {
+      .banner-title {
+        .tab-link {
+          font-size: 1.6rem;
+          margin: 0 0.8rem;
+        }
+      }
+      .slider {     
+        height: 1.6rem;
+        line-height: 1.6rem;
+        margin-top: 0.2rem;
+      }
+    }
   }
 </style>

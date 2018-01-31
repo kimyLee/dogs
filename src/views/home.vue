@@ -200,4 +200,40 @@ export default {
       opacity: 0;
     }
   }
+  @media (max-width: 359px) {
+    .home-page {
+      .bg-img-eye-left {
+        position: absolute;
+        top: 14.5rem;
+        left: 7.5rem;
+        width: 1.8rem;
+        transition: transform .5s ease;
+      }
+      .bg-img-eye-right {
+        position: absolute;
+        top: 14.5rem;
+        right: 8.2rem;
+        width: 1.8rem;
+        transition: transform .5s ease;
+      }
+    }
+  }
+  @media (max-width: 320px) {
+    .home-page {
+      .bg-img-eye-left {
+        position: absolute;
+        top: 12.5rem;
+        left: 6.5rem;
+        width: 1.5rem;
+        transition: transform .5s ease;
+      }
+      .bg-img-eye-right {
+        position: absolute;
+        top: 12.5rem;
+        right: 7.2rem;
+        width: 1.5rem;
+        transition: transform .5s ease;
+      }
+    }
+  }
 </style>
