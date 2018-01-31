@@ -3,13 +3,13 @@
     <!-- 要保持背景图长宽比 -->
     <transition name="fade">
       <div v-show="appear">
-        <img  class="bg-img" src="/luckydogs/static/img/home.jpg">
-        <img  class="bg-img-eye-left" src="/luckydogs/static/img/eyes.png?111">
-        <img  class="bg-img-eye-right" src="/luckydogs/static/img/eyes.png?111">
+        <img  class="bg-img" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/home.jpg">
+        <img  class="bg-img-eye-left" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/eyes.png">
+        <img  class="bg-img-eye-right" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/eyes.png">
       </div>
       <!-- <img v-show="appear" class="bg-img" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/page1.png"> -->
     </transition>
-    <img class="bg-img-text" src="/luckydogs/static/img/home_text.png">
+    <img class="bg-img-text" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/home_text.png">
 
     <!-- 排行榜和我的奖品 -->
     <div class="rightside">

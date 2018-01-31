@@ -2,15 +2,15 @@
   <div class="game-page">
     <!-- 要保持背景图长宽比 -->
     <div id="canvas-container" class="canvas-container"></div>
-    <img  class="bg-img-top" src="/luckydogs/static/img/game-top.jpg">
-    <img class="bg-img-bottom" src="/luckydogs/static/img/game-bottom.jpg">
+    <img  class="bg-img-top" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/game-top.jpg">
+    <img class="bg-img-bottom" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/game-bottom.jpg">
     <!-- <img class="bg-img" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/gamepage.png"> -->
     <!-- 云彩 -->
     <transition name="fade">
       <div v-show="appear">
-        <img class="bg-img-cloud1" src="/luckydogs/static/img/cloud1.png">
-        <img class="bg-img-cloud2" src="/luckydogs/static/img/cloud2.png">
-        <img class="bg-img-text" src="/luckydogs/static/img/game_text.png">
+        <img class="bg-img-cloud1" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/cloud1.png">
+        <img class="bg-img-cloud2" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/cloud2.png">
+        <img class="bg-img-text" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/game_text.png">
       </div>
     </transition>
     <!-- dogs -->
@@ -52,7 +52,7 @@
         <span class="dialog-head-text">{{score}}<span style="font-size: 1.4rem">&nbsp;分</span></span>
       </div>
       <!-- 成功 -->
-      <div class="dialog-box" v-show="score >= 8">
+      <div class="dialog-box" v-show="score >= 8000">
         <p class="dialog-rank">全国排名 30</p>
         <!-- <img class="loterry-button" @click.prevent="$router.push({name: 'lottery'})" src="/luckydogs/static/img/loterryBtn.png"> -->
         <div @click="jumpLottery" class="loterry-button-hover"><img class="loterry-button"  src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/loterryBtn.png"></div>
@@ -62,7 +62,7 @@
         </div>
       </div>
       <!-- 失败 -->
-      <div class="dialog-box" v-show="score < 8">
+      <div class="dialog-box" v-show="score < 8000">
         <p class="dialog-fail">挑战失败</p>
         <p class="dialog-fail small" >不要灰心，继续努力哦</p>
         <div class="button-panel">
@@ -77,6 +77,7 @@
 </template>
 
 <script>
+// import axios from 'axios'
 import rule from '@/components/rule'
 import Fireworks from '@/lib/firework'
 /* eslint-disable */
@@ -102,7 +103,7 @@ export default {
       items: [],
       lock: false,
       clickCount: 0,
-      time: 10,
+      time: 60,
       score: 0,
       gameStart: false,
       showDialog: false,
@@ -169,7 +170,7 @@ export default {
       }
     },
     jumpLottery () {
-      this.$router.push({name: 'lottery'})
+      this.$router.push({name: 'lottery', query: {score: this.score}})
     },
     // 场景计时
     renderScence () {
@@ -214,7 +215,7 @@ export default {
         this.clickCount = this.clickCount > 100 ? 0 : (this.clickCount + 1)
         this.items.splice(0, 0, ele)
         this.items.splice(this.items.length - 1, 1)
-        this.score++
+        this.score = this.score + 200
       } else {
         this.lock = true
         target.clickError = true

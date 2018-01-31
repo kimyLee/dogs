@@ -12,7 +12,7 @@
       <div v-for="item in blocks" class="block-item" :key="item.index" :class="{'turn': item.turn}">
         <!-- 正面 -->
         <div class="front block-item-page"
-            @click.prevent="begin"
+            @click.prevent="beginLoterry"
             :class="{'click-btn': item.index === 9, 'active': activeIndex === item.index}">
             <div v-if="item.index === 9" class="block-text">
               <div class="block-text-top" style="height: 50%;">立即</div>
@@ -21,9 +21,10 @@
         </div>
         <!-- 背面 -->
         <div class="back block-item-page">
-          <div class="block-reward-text">
-            <div class="block-text-top" style="height: 50%;">{{item.reward.slice(0, 2)}}</div>
-            <div class="block-text-bottom" style="height: 50%;">{{item.reward.slice(2, 4)}}</div>
+          <div class="block-reward-text" :class="{'small-text': item.reward.length > 4}">
+            {{item.reward}}
+            <!-- <div class="block-text-top" style="height: 50%;">{{item.reward.slice(0, 2)}}</div>
+            <div class="block-text-bottom" style="height: 50%;">{{item.reward.slice(2, 4)}}</div> -->
           </div>
         </div>
       </div>
@@ -53,22 +54,25 @@
 </template>
 
 <script>
+import axios from 'axios'
 import rule from '@/components/rule'
 export default {
   name: 'lottery',
   data () {
     return {
+      score: '',
       result: '', // 获奖结果
+      // 高档浴巾和精美雨伞是机动组
       blocks: [
-        {index: 1, turn: false, reward: '谢谢参与'},
-        {index: 2, turn: false, reward: '紫光礼盒'},
-        {index: 3, turn: false, reward: '谢谢参与'},
-        {index: 8, turn: false, reward: '精美雨伞'},
+        {index: 1, turn: false, reward: '红米手机'},
+        {index: 2, turn: false, reward: '高档拉杆箱'},
+        {index: 3, turn: false, reward: '美的电压锅'},
+        {index: 8, turn: false, reward: '紫光礼盒'},
         {index: 9, turn: false, reward: '立即抽奖'},
-        {index: 4, turn: false, reward: '经典台历'},
-        {index: 7, turn: false, reward: '谢谢参与'},
-        {index: 6, turn: false, reward: '瑞香礼盒'},
-        {index: 5, turn: false, reward: '谢谢参与'}
+        {index: 4, turn: false, reward: '国味礼盒'},
+        {index: 7, turn: false, reward: '瑞香礼盒'},
+        {index: 6, turn: false, reward: '谢谢参与'},
+        {index: 5, turn: false, reward: '吉品礼盒'}
       ],
       speed: 100,
       decayIndex: 0,
@@ -88,8 +92,42 @@ export default {
     rule
   },
   mounted () {
+    this.$nextTick(() => {
+      this.score = this.$route.query.score
+    })
   },
   methods: {
+    beginLoterry () {
+      this.start()
+      axios.post('/Index/GetDraw', {
+        DrawType: 1,
+        Score: this.score
+      })
+        .then((result) => {
+          let res = result.data
+          if (res.Code === 1) {
+            let data = res.Data
+            if (data.IsWin) {
+              this.$rewards.push(data.AwardRecord)
+              this.blocks[1].reward = data.AwardRecord.AwardName.slice(0, 4)
+              setTimeout(() => {
+                this.wonIndex = 2
+                this.stop()
+              }, 2000)
+            } else {
+              setTimeout(() => {
+                this.wonIndex = 1
+                this.stop()
+              }, 2000)
+            }
+          } else {
+            return Promise.reject(res)
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
     begin () {
       this.start()
       setTimeout(() => {
@@ -326,6 +364,13 @@ export default {
       text-align: center;
       font-size: 3.2rem;
       color: #fff;
+      &::after {
+        content: '';
+        width: 0;
+        height: 100%;
+        display: inline-block;
+        vertical-align: middle;
+      }
     }
     .block-reward-text {
       position: absolute;
@@ -333,6 +378,11 @@ export default {
       text-align: center;
       font-size: 3.2rem;
       color: #c79f62;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .small-text {
+      font-size: 2.4rem;
     }
     .block-text-top{
       position: relative;

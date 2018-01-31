@@ -12,22 +12,65 @@
         <span class="input-item"><span class="input-item-title">电话</span><input type="text" /></span>
         <span class="input-item"><span class="input-item-title">地址</span><input type="text" /></span>
         <div style="text-align: center">
-          <span class="submit-btn" @click.prevent="$router.push({name: 'last'})">提交</span>
+          <span class="submit-btn" @click.prevent="goback" style="margin-right: 2rem">返回</span>
+          <span class="submit-btn" @click.prevent="subMit">提交</span>
         </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'info',
   data () {
     return {
+      target: {},
+      name: '',
+      phone: '',
+      address: ''
     }
   },
   mounted () {
+    this.$nextTick(() => {
+      let index = this.$route.query.index || ''
+      let target = this.$rewards[index]
+      if (target) {
+        this.name = target.UserName || ''
+        this.phone = target.UserPhone || ''
+        this.address = target.UserAddress || ''
+      }
+      this.target = target
+    })
   },
   methods: {
+    goback () {
+      window.history.go(-1)
+    },
+    subMit () {
+      axios.post('/Index/SaveInfo', {
+        UserName: this.name,
+        UserPhone: this.phone,
+        UserAddress: this.address,
+        AwardId: this.target.AwardId
+      })
+        .then((result) => {
+          let res = result.data
+          if (res.Code === 1) {
+            let data = res.Data
+            if (data.Statue) {
+              this.$router.push({name: 'last'})
+            } else {
+              return Promise.reject(data.ErrorMsg)
+            }
+          } else {
+            return Promise.reject(res)
+          }
+        })
+        .catch((error) => {
+          alert('测试错误弹出：' + error)
+        })
+    }
   }
 }
 </script>
@@ -104,7 +147,7 @@ export default {
       text-align: center;
       display: inline-block;
       font-size: 1.8rem;
-      width: 12rem;
+      width: 9rem;
       height: 3.2rem;
       line-height: 3.2rem;
       border: 1px solid #444;

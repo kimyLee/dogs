@@ -21,6 +21,9 @@ window.onload = function() { document.documentElement.style.webkitTouchCallout='
 Vue.config.productionTip = false
 // Vue.prototype.$domain = document.URL.indexOf('8081') >= 0 ? '/static' : '/dogs/static'
 
+// 全局变量
+Vue.prototype.$rewards = []
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

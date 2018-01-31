@@ -16,9 +16,9 @@
           <li v-for="item in rankList" :key="item.Sort">
             <div class="ranking-section">
               <span class="rank">{{ item.Sort }}</span>
-               <img :src="item.UserLogo" class="avatar" />
-              <span class="name">{{ item.UserName }}</span>
-              <span class="score">{{ item.score }}</span>
+               <img :src="item.HeadUrl" class="avatar" />
+              <span class="name">{{ item.NickName }}</span>
+              <span class="score">{{ item.Score }}</span>
             </div>
           </li>
         </ul>
@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'app',
   data () {
@@ -69,8 +70,28 @@ export default {
     }
   },
   mounted () {
+    this.fetchData()
   },
   methods: {
+    // 获取排行榜数据
+    fetchData () {
+      axios.post('/Index/GmaeStatue')
+        .then((result) => {
+          let res = result.data
+          if (res.Code === 1) {
+            let data = res.Data
+            this.rankList = data.RankingList
+          } else {
+            return Promise.reject(res)
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+          // this.msgText = error.msg || '未知错误'
+          // this.msgTip = true
+        })
+      console.log('fetching data...')
+    }
   }
 }
 </script>
