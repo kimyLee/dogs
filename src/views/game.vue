@@ -192,7 +192,7 @@ export default {
     restart () {
       this.showDialog = false
       this.gameStart = false
-      this.time = 10
+      this.time = 60
       this.score = 0
       this.lock = false
     },

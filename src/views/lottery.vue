@@ -61,6 +61,7 @@ export default {
   name: 'lottery',
   data () {
     return {
+      isLotterying: false,
       score: '',
       result: '', // 获奖结果
       // 高档浴巾和精美雨伞是机动组
@@ -99,6 +100,10 @@ export default {
   },
   methods: {
     beginLoterry () {
+      if (this.isLotterying) {
+        return
+      }
+      this.isLotterying = true
       this.start()
       console.log(this.score)
       let params = Qs.stringify({
@@ -109,7 +114,6 @@ export default {
       axios.post('/Index/GetDraw', params, {headers: { 'Content-Type': 'application/x-www-form-urlencoded' }})
         .then((result) => {
           let res = result.data
-          console.log()
           if (res.Code === 1) {
             let data = res.Data
             if (data.IsWin) {
