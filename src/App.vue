@@ -12,6 +12,16 @@
       </div>
     </div>
     <router-view v-if="curProgress >= 100"/>
+    <!-- 全局弹窗 -->
+    <!-- <div class="global-dialog" v-show="showDialog">
+      <div class="dialog-box">
+        <div class="close"><span class="close-btn">×</span></div>
+        <div style="text-align: center">
+          <img class="not-reward" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/smile.png">
+          <p class="reward-name-small" style="font-size: 1.8rem;">{{msg}}</p>
+        </div>
+      </div>
+    </div> -->
   </div>
 </template>
 
@@ -20,6 +30,8 @@ export default {
   name: 'app',
   data () {
     return {
+      showDialog: false,  // 显示弹窗
+      msg: '',            // 显示信息
       progress: 0,
       curProgress: 0,     // 加载进度
       circleDasharray: 0, // 圆环长度

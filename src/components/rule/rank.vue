@@ -38,8 +38,8 @@ export default {
     return {
       personInfo: {
         // pic: '/luckydogs/static/img/fu.png',
-        pic: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/fu.png',
-        name: '我可能是遗落地球的小仙女',
+        pic: 'http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/home.jpg',
+        name: 'hello',
         bestScore: '100',
         rank: 30
       },
@@ -71,8 +71,30 @@ export default {
   },
   mounted () {
     this.fetchData()
+    this.getRewardInfo()
   },
   methods: {
+    // 获取个人信息
+    getRewardInfo () {
+      axios.post('/Index/UserRecord')
+        .then((result) => {
+          let res = result.data
+          if (res.Code === 1) {
+            let data = res.Data
+            this.personInfo = {
+              pic: data.UserLogo,
+              name: data.NickName,
+              bestScore: data.MaxScore,
+              rank: data.Ranking
+            }
+          } else {
+            return Promise.reject(res)
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
     // 获取排行榜数据
     fetchData () {
       axios.post('/Index/GmaeStatue')
@@ -115,8 +137,14 @@ export default {
       display: inline-block;
       float: left;
       width: 8rem;
+      height: 8rem;
+      border-radius: 50%;
+      overflow: hidden;
+      position: relative;
       img {
-        width: 100%;
+        width: 8rem;
+        height: 8rem;
+        // width: 100%;
       }
     }
     .my-info {

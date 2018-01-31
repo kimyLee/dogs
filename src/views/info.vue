@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import Qs from 'qs'
 import axios from 'axios'
 export default {
   name: 'info',
@@ -46,13 +47,14 @@ export default {
   mounted () {
     this.$nextTick(() => {
       let index = this.$route.query.index || ''
-      let target = this.$rewards[index]
+      let target = window.$rewards && window.$rewards[index - 0]
       if (target) {
         this.name = target.UserName || ''
         this.phone = target.UserPhone || ''
         this.address = target.UserAddress || ''
       }
-      this.target = target
+      this.target = target || {}
+      console.log(window.$rewards, this.target, 'test')
     })
   },
   methods: {
@@ -60,12 +62,13 @@ export default {
       window.history.go(-1)
     },
     subMit () {
-      axios.post('/Index/SaveInfo', {
+      let params = Qs.stringify({
         UserName: this.name,
         UserPhone: this.phone,
         UserAddress: this.address,
         AwardId: this.target.AwardId
       })
+      axios.post('/Index/SaveInfo', params, {headers: { 'Content-Type': 'application/x-www-form-urlencoded' }})
         .then((result) => {
           let res = result.data
           if (res.Code === 1) {
@@ -80,7 +83,8 @@ export default {
           }
         })
         .catch((error) => {
-          alert('发生了一些错误：' + error)
+          console.log(error)
+          alert('已提交信息或未知错误')
         })
     }
   }

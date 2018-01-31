@@ -22,32 +22,32 @@ export default {
     return {
       /* eslint-disable */
       rewards: [
-        {
-          "AwardId": 3,
-          "AwardName": "海洋王國萬聖節夜間門票8折",
-          "AwardDesc": "",
-          "AwardType": 2,
-          "AwardImg": "中奖图片",
-          "ChanceKey": "PAFIIFBJ1",
-          "IsChange": false,
-          "UserName": "",
-          "UserPhone": "",
-          "UserAddress": "",
-          "IsGet": true
-        },
-        {
-          "AwardId": 6,
-          "AwardName": "海洋王國萬聖節夜間門票8折",
-          "AwardDesc": "",
-          "AwardType": 2,
-          "AwardImg": "中奖图片",
-          "ChanceKey": "PAFIIFBJ1",
-          "IsChange": false,
-          "UserName": "",
-          "UserPhone": "",
-          "UserAddress": "",
-          "IsGet": true
-        }
+        // {
+        //   "AwardId": 3,
+        //   "AwardName": "海洋王國萬聖節夜間門票8折",
+        //   "AwardDesc": "",
+        //   "AwardType": 2,
+        //   "AwardImg": "中奖图片",
+        //   "ChanceKey": "PAFIIFBJ1",
+        //   "IsChange": false,
+        //   "UserName": "",
+        //   "UserPhone": "",
+        //   "UserAddress": "",
+        //   "IsGet": true
+        // },
+        // {
+        //   "AwardId": 6,
+        //   "AwardName": "海洋王國萬聖節夜間門票8折",
+        //   "AwardDesc": "",
+        //   "AwardType": 2,
+        //   "AwardImg": "中奖图片",
+        //   "ChanceKey": "PAFIIFBJ1",
+        //   "IsChange": false,
+        //   "UserName": "",
+        //   "UserPhone": "",
+        //   "UserAddress": "",
+        //   "IsGet": true
+        // }
       ]
     }
   },
@@ -60,14 +60,15 @@ export default {
     },
     // 获取奖品信息
     getRewardInfo () {
-      this.$rewards = this.rewards
+      // window.$rewards = this.rewards
       console.log('success')
       axios.post('/Index/UserRecord')
         .then((result) => {
           let res = result.data
           if (res.Code === 1) {
             let data = res.Data
-            this.$rewards = data.AwardRecord
+            window.$rewards = data.AwardRecord
+            console.log(window.$rewards)
             this.rewards = data.AwardRecord
           } else {
             return Promise.reject(res)

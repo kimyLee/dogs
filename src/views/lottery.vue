@@ -54,6 +54,7 @@
 </template>
 
 <script>
+import Qs from 'qs'
 import axios from 'axios'
 import rule from '@/components/rule'
 export default {
@@ -100,26 +101,30 @@ export default {
     beginLoterry () {
       this.start()
       console.log(this.score)
-      axios.post('/Index/GetDraw', {
+      let params = Qs.stringify({
         DrawType: 1,
         Score: this.score
       })
+      console.log(this.params)
+      axios.post('/Index/GetDraw', params, {headers: { 'Content-Type': 'application/x-www-form-urlencoded' }})
         .then((result) => {
           let res = result.data
+          console.log()
           if (res.Code === 1) {
             let data = res.Data
             if (data.IsWin) {
               this.$rewards.push(data.AwardRecord)
+              let reward = data.AwardRecord
               // 找到抽中奖品 如果是雨伞或者浴衣
-              if (data.AwardId === 6 || data.AwardId === 9) {
-                this.blocks[7].reward = data.AwardName
+              if (reward.AwardId === 6 || reward.AwardId === 9) {
+                this.blocks[7].reward = reward.AwardName
                 setTimeout(() => {
                   this.wonIndex = 6
                   this.stop()
                 }, 2000)
               } else {
                 setTimeout(() => {
-                  this.wonIndex = data.AwardId
+                  this.wonIndex = reward.AwardId || 6
                   this.stop()
                 }, 2000)
               }

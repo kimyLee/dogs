@@ -45,9 +45,9 @@ var Fireworks = function(){
 		self.my = self.ch/2;
 		self.currentHue = 44;                     // todo: 山？ 可以去掉
 
-		self.partCount = 199;                       // 烟花粒子数	
+		self.partCount = 100;                       // 烟花粒子数	
 		self.partSpeed = 1;                        // 烟花散开粒子速度
-		self.partSpeedVariance = 10;               // 烟花速度方差， 决定散开范围
+		self.partSpeedVariance = 3;               // 烟花速度方差， 决定散开范围
 		self.partWind = 0;                        // 散开末端的曲折
 		self.partFriction = 17;                     // 摩擦力，表现：烟花远近（越小越近图越大）
 		self.partGravity = 0;                      // 烟花粒子所受重力
@@ -404,12 +404,12 @@ var Fireworks = function(){
 	
 	self.init();
   
-  var initialLaunchCount = 6;
-  while(initialLaunchCount--){
-    setTimeout(function(){
- 		self.fireworks.push(new Firework(rand(self.cw/2 - 50, self.cw/2 + 50), self.ch, rand(50, self.cw-50), rand(50, self.ch/2)-50));
-    }, initialLaunchCount * 200);
-	}
+  // var initialLaunchCount = 6;
+  // while(initialLaunchCount--){
+  //   setTimeout(function(){
+ 	// 	self.fireworks.push(new Firework(rand(self.cw/2 - 50, self.cw/2 + 50), self.ch, rand(50, self.cw-50), rand(50, self.ch/2)-50));
+  //   }, initialLaunchCount * 200);
+	// }
 	
 	return self;
 	
