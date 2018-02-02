@@ -4,7 +4,7 @@
         v-for="(item, $index) in rewards"
         :key="item.AwardId">
         <span class="reward-info">{{$index + 1}}、{{item.AwardName}}</span>
-        <span class="info-btn" @click="goInfo($index)">管理</span>
+        <span class="info-btn" @click="goInfo($index)">查看</span>
      </p>
      <p v-show="!rewards.length" class="no-reward">还没获得奖品哦<br>多多努力赢取大奖吧</p>
       <div class="start-panel">

@@ -139,8 +139,8 @@ export default {
       this.dropdown()
     }, 500)
 
-    let winW = window.innerWidth
-    let winY = window.innerHeight * 0.45
+    // let winW = window.innerWidth
+    // let winY = window.innerHeight * 0.45
     setTimeout(() => {
       this.appear = true
       // this.firework = new Fireworks()
@@ -180,7 +180,7 @@ export default {
       axios.post('/Index/SaveScore', params, {headers: { 'Content-Type': 'application/x-www-form-urlencoded' }})
         .then((result) => {
           let res = result.data
-          if (res.Code === 1) { 
+          if (res.Code === 1) {
           } else {
             return Promise.reject(res)
           }
@@ -603,7 +603,6 @@ export default {
           -webkit-tap-highlight-color: transparent;
         }
       }
-      
     }
   }
 

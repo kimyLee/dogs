@@ -12,8 +12,8 @@
         <span class="input-item"><span class="input-item-title">电话</span><input type="text"  v-model="phone" /></span>
         <span class="input-item"><span class="input-item-title">地址</span><input type="text"  v-model="address" /></span>
         <div style="text-align: center">
-          <span class="submit-btn" @click.prevent="goback" style="margin-right: 2rem">返回</span>
-          <span class="submit-btn" @click.prevent="subMit">提交</span>
+          <span class="submit-btn" @click.prevent="goback" >返回</span>
+          <span class="submit-btn" v-show="!hasChange" @click.prevent="subMit" style="margin-left: 2rem">提交</span>
         </div>
     </div>
     <!-- 保存成功弹窗 -->
@@ -41,7 +41,8 @@ export default {
       target: {},
       name: '',
       phone: '',
-      address: ''
+      address: '',
+      hasChange: false     // 是否留资
     }
   },
   mounted () {
@@ -52,6 +53,7 @@ export default {
         this.name = target.UserName || ''
         this.phone = target.UserPhone || ''
         this.address = target.UserAddress || ''
+        this.hasChange = target.IsChange || false
       }
       this.target = target || {}
       console.log(window.$rewards, this.target, 'test')
@@ -62,6 +64,18 @@ export default {
       window.history.go(-1)
     },
     subMit () {
+      if (!this.name.replace(/\s/g, '')) {
+        alert('用户名不能为空')
+        return
+      }
+      if (!this.phone.replace(/\s/g, '')) {
+        alert('手机号不能为空')
+        return
+      }
+      if (!this.address.replace(/\s/g, '')) {
+        alert('地址不能为空')
+        return
+      }
       let params = Qs.stringify({
         UserName: this.name,
         UserPhone: this.phone,
@@ -79,7 +93,6 @@ export default {
               if (res.msg === 'saveed') {
                 alert('您已提交过信息，不能重复提交')
               }
-              return
             }
           } else {
             return Promise.reject(res)

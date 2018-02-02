@@ -12,7 +12,6 @@
       <div v-for="item in blocks" class="block-item" :key="item.index" :class="{'turn': item.turn}">
         <!-- 正面 -->
         <div class="front block-item-page"
-            
             :class="{'click-btn': item.index === 9, 'active': activeIndex === item.index}">
             <div v-if="item.index === 9" class="block-text" @click.prevent="beginLoterry">
               <div class="block-text-top" style="height: 50%;">立即</div>

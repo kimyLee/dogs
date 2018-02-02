@@ -131,7 +131,7 @@ export default {
           margin: 0 0.8rem;
         }
       }
-      .slider {     
+      .slider {
         height: 1.6rem;
         line-height: 1.6rem;
         margin-top: 0.2rem;

@@ -10,7 +10,7 @@
     <span class="orange-text">4~20名榜单奖：滕王阁幸福家礼盒 1份</span>
     </p>
     <p>活动时间：<br>
-    <span class="orange-text">2018年2月1日—2月10日</span>
+    <span class="orange-text">2018年2月5日—2月9日</span>
     </p>
     <p>本活动最终解释权归主办方所有。</p>
     <div class="start-panel">
