@@ -66,12 +66,12 @@ export default {
       result: '', // 获奖结果
       // 高档浴巾和精美雨伞是机动组
       blocks: [
-        {index: 1, turn: false, reward: '红米手机'},
-        {index: 2, turn: false, reward: '高档拉杆箱'},
-        {index: 3, turn: false, reward: '美的电压锅'},
+        {index: 1, turn: false, reward: '红米手机'},                  // 榜单
+        {index: 2, turn: false, reward: '高档拉杆箱'},                // 榜单
+        {index: 3, turn: false, reward: '美的电压锅'},                // 榜单
         {index: 8, turn: false, reward: '紫光礼盒'},
         {index: 9, turn: false, reward: '立即抽奖'},
-        {index: 4, turn: false, reward: '国味礼盒'},
+        {index: 4, turn: false, reward: '国味礼盒'},                  // 榜单
         {index: 7, turn: false, reward: '瑞香礼盒'},
         {index: 6, turn: false, reward: '谢谢参与'},
         {index: 5, turn: false, reward: '吉品礼盒'}
