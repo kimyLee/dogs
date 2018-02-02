@@ -20,7 +20,7 @@
     </div>
     <!-- 按钮面板 -->
     <div class="option-panel" >
-      <span class="start-btn" @click.prevent="$router.push({name: 'home', query: {tab: 'ruler'}})">挑战开始</span>
+      <span class="start-btn" @click.prevent="$router.push({name: 'home', query: {tab: 'ruler'}})">开始游戏</span>
       <!-- <img class="logo-img" src="~@/assets/img/logo.png"> -->
       <img class="logo-img" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/logo.png">
     </div>
@@ -173,16 +173,18 @@ export default {
       box-sizing: border-box;
     }
     .start-btn{
-      width: 12rem;
-      height: 3rem;
-      border-radius: 3rem;
-      line-height: 3rem;
+      width: 14rem;
+      height: 5rem;
+      border-radius: 2.2rem;
+      line-height: 5rem;
       display: inline-block;
       background: #fc9808;
       text-align: center;
       color: #fff;
-      font-size: 2rem;
+      font-size: 3rem;
+      font-weight: bold;
       position: absolute;
+      left: 1rem;
       bottom: 0;
       -webkit-tap-highlight-color: transparent;
     }

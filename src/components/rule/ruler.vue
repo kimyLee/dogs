@@ -7,7 +7,7 @@
     <span class="orange-text">第1名：红米手机 1台</span><br>
     <span class="orange-text">第2名：高档压杆箱 1个</span><br>
     <span class="orange-text">第3名：美的电压力锅 1套</span><br>
-    <span class="orange-text">4~20名榜单奖：滕王阁幸福家礼盒 1份</span>
+    <span class="orange-text">1~20名榜单奖：国味礼盒1份</span>
     </p>
     <p>活动时间：<br>
     <span class="orange-text">2018年2月5日—2月9日</span>
@@ -15,7 +15,7 @@
     <p>本活动最终解释权归主办方所有。</p>
     <div class="start-panel">
       <router-link class="btn-link" :class="{'empty': $route.name !== 'game'}" :to="{name: $route.name}" @click.prevent.stop>返回</router-link>
-      <router-link class="btn-link" v-show="$route.name !== 'game'" :to="{name: 'game'}" @click.prevent.stop><span style="">GO</span></router-link>
+      <router-link class="btn-link" v-show="$route.name !== 'game'" :to="{name: 'game'}" @click.prevent.stop><span style="">开始</span></router-link>
     </div>
   </div>
 </template>
@@ -37,9 +37,11 @@ export default {
 <style lang="scss">
   .ruler-intro {
     text-align: left;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     padding: 0 1.6rem;
     color: #444;
+      overflow: auto;
+    height: calc(100% - 10rem);
     .orange-text {
       color: #e95513;
     }

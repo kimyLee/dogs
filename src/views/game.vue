@@ -1,5 +1,11 @@
 <template>
   <div class="game-page">
+    <!-- 游戏开始 GO -->
+    <div class="fade-text-hover" v-show="beginNum >= 0">
+      <transition name="fade-text">
+        <div class="text-effect" v-show="showTextEffect">{{showTextEffect}}</div>
+      </transition>
+    </div>
     <!-- 要保持背景图长宽比 -->
     <!-- <div id="canvas-container" class="canvas-container"></div> -->
     <img  class="bg-img-top" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/game-top.jpg">
@@ -17,6 +23,15 @@
     </transition>
     <!-- dogs -->
     <div class="content-box">
+       <!-- 得分面板 -->
+      <div class="score-panel">
+        <div class="top">
+          <span>当前得分</span>
+        </div>
+        <div class="bottom">
+          <span >{{score}}分</span>
+        </div>
+      </div>
     <!-- 倒计时 -->
       <div class="leftside">
         <div class="leftside-btn">
@@ -39,8 +54,30 @@
       <div class="btns">
         <span class="img-btn fu" @click.prevent="update('fudog')"><img src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/fu.png"/></span>
         <span class="img-btn lu" @click.prevent="update('ludog')"><img src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/lu.png"/></span>
-        <span class="img-btn shou" @click.prevent="update('shoudog')"><img src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png"/></span>
-        <span class="img-btn xi" @click.prevent="update('xidog')"><img src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/xi.png"/></span>
+        <div class="img-btn shou">
+          <span  @click.prevent="update('shoudog')"><img src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/shou.png"/></span>
+          <!-- 引导提示 v-if="addFirstTip" v-if="handIn"-->
+          <div class="click-tip" @click="directClick(2)" v-if="addTips === 2">
+            <transition name="right-in">
+              <img class="click-tip-finger" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/finger.png" v-if="handIn === 2"/>
+            </transition>
+            <div class="w1" ></div>
+            <div class="w2" ></div>
+            <div class="w3"></div>
+          </div>
+        </div>
+        <div class="img-btn xi">
+          <span  @click.prevent="update('xidog')"><img src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/xi.png"/></span>
+           <!-- 引导提示 v-if="addFirstTip" v-if="handIn"-->
+          <div class="click-tip" @click="directClick(1)" v-if="addTips === 1">
+            <transition name="right-in">
+              <img class="click-tip-finger" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/finger.png" v-if="handIn === 1"/>
+            </transition>
+            <div class="w1" ></div>
+            <div class="w2" ></div>
+            <div class="w3"></div>
+          </div>
+        </div>
         <!-- <span class="img-btn fu" @click.prevent="update('fudog')"><img src="~@/assets/img/fu.png"/></span>
         <span class="img-btn lu" @click.prevent="update('ludog')"><img src="~@/assets/img/lu.png"/></span>
         <span class="img-btn shou" @click.prevent="update('shoudog')"><img src="~@/assets/img/shou.png"/></span>
@@ -69,7 +106,7 @@
         <p class="dialog-fail small" >不要灰心，继续努力哦</p>
         <div class="button-panel">
           <!-- <span class="dialog-btn share">分享</span> -->
-          <span class="dialog-btn" style="float:left;" @click.prevent="$router.push({name: $route.name, query: {tab: 'rank'}})">排行榜</span>
+          <span class="dialog-btn" @click.prevent="$router.push({name: $route.name, query: {tab: 'rank'}})">排行榜</span><br>
           <span class="dialog-btn rank-list" @click.prevent="restart" style="font-size: 1.6rem">再来一局</span>
         </div>
       </div>
@@ -116,7 +153,12 @@ export default {
       movetion: {start: 0, begin: 0, end: 200, during: 50},
       target: '',
       firework: '',
-      fireworkTimer: ''
+      fireworkTimer: '',
+      showTextEffect: '',                   // 进场特效
+      beginNum: 3,                          // 进场特效
+      addTips: '',                          // 显示哪个手指
+      handIn: '',                            // 手指
+      hasCheck: false                            // 是否引导国
     }
   },
   components: {
@@ -126,6 +168,10 @@ export default {
     clearInterval(this.fireworkTimer)
   },
   mounted () {
+    // 初始化开始
+    setTimeout(() => {
+      this.countEffect()
+    }, 50)
     // 初始化狗狗
     let time = 1
     this.items = this.dogs.map((e) => {
@@ -151,6 +197,63 @@ export default {
     }, 1000)
   },
   methods: {
+    // 引导点击了按钮
+    directClick (num) {
+      if (num === 1) {
+        this.addTips = 2
+        this.handIn = 2
+        let ele = {
+          dog: this.dogs[Math.floor(Math.random() * 4)],
+          time: (new Date()).getTime(),
+          clickError: false
+        }
+        this.clickCount = this.clickCount > 100 ? 0 : (this.clickCount + 1)
+        this.items.splice(0, 0, ele)
+        this.items.splice(this.items.length - 1, 1)
+        // this.score = this.score + 600
+      }
+      if (num === 2) {
+        this.addTips = ''
+        let ele = {
+          dog: this.dogs[Math.floor(Math.random() * 4)],
+          time: (new Date()).getTime(),
+          clickError: false
+        }
+        this.clickCount = this.clickCount > 100 ? 0 : (this.clickCount + 1)
+        this.items.splice(0, 0, ele)
+        this.items.splice(this.items.length - 1, 1)
+        // this.score = this.score + 600
+        localStorage.setItem('hasCheck', 1)
+      }
+      console.log('click')
+    },
+    countEffect () {
+      console.log(this.beginNum)
+      if (this.beginNum > 0) {
+        this.showTextEffect = this.beginNum
+        setTimeout(() => {
+          this.showTextEffect = ''
+        }, 500)
+        setTimeout(() => {
+          this.beginNum--
+          this.countEffect()
+        }, 1000)
+      } else {
+        this.showTextEffect = 'GO'
+        setTimeout(() => {
+          this.showTextEffect = ''
+          this.beginNum--
+          // 触发提示
+          this.hasCheck = !!(localStorage.getItem('hasCheck') - 0)
+          if (!this.hasCheck) {
+            this.addTips = 1
+            setTimeout(() => {
+              this.handIn = 1
+            }, 50)
+          }
+        }, 500)
+      }
+    },
     // 掉落函数
     dropdown () {
       let dis = bounceEaseOut(this.movetion.start, this.movetion.begin, this.movetion.end, this.movetion.during)
@@ -218,6 +321,9 @@ export default {
       this.lock = false
     },
     update (dog) {
+      if (this.addTips) {
+        return
+      }
       if (this.lock) {
         return
       }
@@ -262,6 +368,51 @@ export default {
     width: 100%;
     height: 100%;
     background: #ff1457;
+    .fade-text-enter-active, .fade-text-leave-active {
+      opacity: 0;
+      transform: scale(1.8);
+      transition: transform .5s, opacity .5s;
+    }
+    .fade-text-enter, .fade-text-leave-to {
+      transform: scale(1);
+      opacity: 1;
+    }
+    .right-in-enter-active, .right-in-leave-active {
+      transition: all ease .3s;
+    }
+    .right-in-enter, .right-in-leave-to {
+      transform: translateY(-1rem);
+      opacity: 0;
+    }
+    .fade-text-hover {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 999;
+      width: 100%;
+      height: 100%;
+      vertical-align: middle;
+      text-align: center;
+      &::after {
+        content: '';
+        width: 0;
+        height: 100%;
+        display: inline-block;
+        vertical-align: middle;
+      }
+      background: rgba(255, 255, 255, .7);
+    }
+    .text-effect {
+      display: inline-block;
+      height: 4rem;
+      line-height: 4rem;
+      top: 50%;
+      margin-top: 2rem;
+      vertical-align: middle;
+      color: #ff1458;
+      font-weight: bold;
+      font-size: 9rem;
+    }
     // 弹窗样式
     .my-dialog {
       position: absolute;
@@ -324,16 +475,17 @@ export default {
         color: #e95513;
         height: 2.4rem;
         line-height: 2.4rem;
-        width: 7.5rem;
+        min-width: 10rem;
         border:  2px solid #e95513;
         border-radius: 2.4rem;
         -webkit-tap-highlight-color: transparent;
+        margin-bottom: 1rem;
       }
       .share {
-        float: left;
+        // float: left;
       }
       .rank-list {
-        float: right;
+        // float: right;
       }
       .dialog-fail {
         margin: 0;
@@ -360,6 +512,31 @@ export default {
       top: 0;
       left: 0;
       z-index: 1;
+    }
+    .score-panel {
+      position: absolute;
+      right: 2.5rem;
+      top: 14rem;
+      border-radius: 0.6rem;
+      width: 8.4rem;
+      overflow: hidden;
+      text-align: center;
+      font-size: 1.6rem;
+      z-index: 1000;
+      .top {
+        background: #ff1458;
+        height: 4rem;
+        line-height: 4rem;
+        width: 100%;
+        color: #fff;
+      }
+      .bottom {
+        background: #fff;
+        height: 4rem;
+        line-height: 4rem;
+        width: 100%;
+        color: #444;
+      }
     }
     .bg-img-top {
       position: absolute;
@@ -423,6 +600,11 @@ export default {
       img{
         width: 100%;
       }
+      span {
+        width: 100%;
+        height: 100%;
+        display: inline-block
+      }
     }
     .fu {
       position: relative;
@@ -443,6 +625,54 @@ export default {
       position: relative;
       top: -1.5rem;
       left: 1rem;
+      &::after{
+
+      }
+    }
+    // 引导按钮
+    .click-tip {
+      position: absolute;
+      top: -25%;
+      left: -25%;
+      width: 150%;
+      height: 150%;
+      // z-index: 999;
+      // bottom: 0rem;
+      // right: 0;
+      // width: 8rem;
+      // height: 8rem;
+      .click-tip-finger {
+        position: absolute;
+        top: -6rem;
+        right: 1rem;
+        width: 7rem;
+        opacity: 1;
+        transform: translateY(0);
+        animation: finger 1s infinite alternate;
+      }
+      div {
+        border: 0.6rem solid #fff;
+        position:absolute;
+        width: 0;
+        height: 0;
+        top: 14%;
+        left: 14%;
+        border-radius:50%;
+        // margin-top: 1.2rem;
+        // margin-left: 0.7rem;
+        &.w1 {
+          animation: ripple 2s infinite;
+          animation-delay: 0s;
+        }
+        &.w2 {
+          animation: ripple 2s infinite;
+          animation-delay: 1s;
+        }
+        &.w3 {
+          animation: ripple 2s infinite;
+          animation-delay: 1.5s;
+        }
+      }
     }
     // dogs
     .list-enter-active, .list-leave-active {
@@ -551,8 +781,32 @@ export default {
     from {transform: rotate(0)}
     to {transform: rotate(360deg)}
   }
+  @keyframes finger {
+    from {transform: translateY(-2rem)}
+    to {transform: translateY(0)}
+  }
+  @keyframes ripple {
+    from {
+      opacity: 1;
+      width: 60%;
+      height: 60%;
+      top: 14%;
+      left: 14%;
+    }
+    to {
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      top: -8%;
+      left: -8%;
+    }
+  }
   @media (max-width: 340px) {
     .game-page {
+      .score-panel {
+        right: 2rem;
+        top: 12rem;
+      }
       .bg-img-cloud1 {
         position: absolute;
         left: 4rem;
