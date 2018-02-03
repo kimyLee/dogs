@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import Bus from '@/bus'
 
 /* eslint-disable */
 window.onload = function() { document.documentElement.style.webkitTouchCallout='none'; };
@@ -23,6 +24,13 @@ Vue.config.productionTip = false
 
 // 全局变量
 Vue.prototype.$rewards = []
+Vue.prototype.$bus = Bus
+
+// ios 还是安卓
+var u = navigator.userAgent
+window.isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1  // android终端
+window.isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)    // ios终端
+
 
 /* eslint-disable no-new */
 new Vue({

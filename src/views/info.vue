@@ -65,15 +65,15 @@ export default {
     },
     subMit () {
       if (!this.name.replace(/\s/g, '')) {
-        alert('用户名不能为空')
+        this.$bus.$emit('pop-alert', '用户名不能为空')
         return
       }
       if (!this.phone.replace(/\s/g, '')) {
-        alert('手机号不能为空')
+        this.$bus.$emit('pop-alert', '手机号不能为空')
         return
       }
       if (!this.address.replace(/\s/g, '')) {
-        alert('地址不能为空')
+        this.$bus.$emit('pop-alert', '地址不能为空')
         return
       }
       let params = Qs.stringify({
@@ -91,7 +91,7 @@ export default {
               this.$router.push({name: 'last'})
             } else {
               if (res.msg === 'saveed') {
-                alert('您已提交过信息，不能重复提交')
+                this.$bus.$emit('pop-alert', '您已提交过信息，不能重复提交')
               }
             }
           } else {
@@ -100,7 +100,7 @@ export default {
         })
         .catch((error) => {
           console.log(error)
-          alert('未知错误')
+          this.$bus.$emit('pop-alert', '未知错误')
         })
     }
   }

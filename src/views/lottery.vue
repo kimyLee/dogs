@@ -9,7 +9,7 @@
     <img class="logo-bottom-img" src="/luckydogs/static/img/logo2.png"> -->
     <!-- loterry-panel -->
     <div class="loterry-panel" v-show="!result">
-      <div v-for="item in blocks" class="block-item" :key="item.index" :class="{'turn': item.turn}">
+      <div v-for="item in blocks" class="block-item" :key="item.index" :class="{'turn': item.turn, 'selected': item.selected}">
         <!-- 正面 -->
         <div class="front block-item-page"
             :class="{'click-btn': item.index === 9, 'active': activeIndex === item.index}">
@@ -66,15 +66,15 @@ export default {
       result: '', // 获奖结果
       // 高档浴巾和精美雨伞是机动组
       blocks: [
-        {index: 1, turn: false, reward: '红米手机'},                  // 榜单
-        {index: 2, turn: false, reward: '高档拉杆箱'},                // 榜单
-        {index: 3, turn: false, reward: '美的电压锅'},                // 榜单
-        {index: 8, turn: false, reward: '紫光礼盒'},
-        {index: 9, turn: false, reward: '立即抽奖'},
-        {index: 4, turn: false, reward: '国味礼盒'},                  // 榜单
-        {index: 7, turn: false, reward: '瑞香礼盒'},
-        {index: 6, turn: false, reward: '谢谢参与'},
-        {index: 5, turn: false, reward: '吉品礼盒'}
+        {index: 1, turn: false, reward: '浴巾', selected: false},                    // 榜单
+        {index: 2, turn: false, reward: '谢谢参与', selected: false},                // 榜单
+        {index: 3, turn: false, reward: '谢谢参与', selected: false},                // 榜单
+        {index: 8, turn: false, reward: '紫光礼盒', selected: false},
+        {index: 9, turn: false, reward: '立即抽奖', selected: false},
+        {index: 4, turn: false, reward: '谢谢参与', selected: false},                // 榜单
+        {index: 7, turn: false, reward: '瑞香礼盒', selected: false},
+        {index: 6, turn: false, reward: '精美雨伞', selected: false},
+        {index: 5, turn: false, reward: '吉品礼盒', selected: false}
       ],
       speed: 100,
       decayIndex: 0,
@@ -122,16 +122,16 @@ export default {
               }
               window.$rewards.push(data.AwardRecord)
               let reward = data.AwardRecord
-              // 找到抽中奖品 如果是雨伞或者浴衣
-              if (reward.AwardId === 6 || reward.AwardId === 9) {
-                this.blocks[7].reward = reward.AwardName
+              // 找到抽中奖品 如果是浴衣
+              if (reward.AwardId === 9) {
+                // this.blocks[7].reward = reward.AwardName
                 setTimeout(() => {
-                  this.wonIndex = 6
+                  this.wonIndex = 1
                   this.stop()
                 }, 2000)
               } else {
                 setTimeout(() => {
-                  this.wonIndex = reward.AwardId || 6
+                  this.wonIndex = reward.AwardId || 2
                   this.stop()
                 }, 2000)
               }
@@ -276,6 +276,7 @@ export default {
       for (let i = this.blocks.length; i--;) {
         if (this.blocks[i].index === index) {
           this.blocks[i].turn = true
+          this.blocks[i].selected = true
           setTimeout(() => {
             this.result = this.blocks[i]
           }, 2000)
@@ -284,7 +285,7 @@ export default {
       }
       setTimeout(() => {
         for (let i = this.blocks.length; i--;) {
-          if (this.blocks[i].index !== 9) {
+          if (this.blocks[i].index !== 9 && this.blocks[i].index !== index) {
             this.blocks[i].turn = true
           }
         }
@@ -477,6 +478,12 @@ export default {
     }
     .turn .back{
       transform: rotateY(360deg);
+    }
+    .turn.selected .back{
+      background: #ff0b57;
+      .block-reward-text {
+        color: #fff;
+      }
     }
   }
 </style>

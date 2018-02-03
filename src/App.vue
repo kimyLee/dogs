@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" >
      <!-- 预加载 -->
     <div class="loading" v-show="curProgress < 100">
       <div class="loading-cycle">
@@ -12,16 +12,24 @@
       </div>
     </div>
     <router-view v-if="curProgress >= 100"/>
+    <!-- 音频加载 -->
+    <audio id="bg-music" src="/static/music/bg.mp3" preload loop></audio>
+    <audio id="right-music" src="/static/music/right.mp3" preload></audio>
+    <audio id="error-music" src="/static/music/error.mp3" preload></audio>
+    <audio id="time-music" src="/static/music/time.mp3" preload></audio>
     <!-- 全局弹窗 -->
-    <!-- <div class="global-dialog" v-show="showDialog">
+    <div class="global-dialog" v-show="showDialog">
       <div class="dialog-box">
-        <div class="close"><span class="close-btn">×</span></div>
+        <div class="close" @click="closeDialog"><span class="close-btn">×</span></div>
         <div style="text-align: center">
           <img class="not-reward" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/smile.png">
           <p class="reward-name-small" style="font-size: 1.8rem;">{{msg}}</p>
+          <div class="operation">
+            <span class="operation-btn" @click.prevent="closeDialog">确定</span>
+          </div>
         </div>
       </div>
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -30,8 +38,9 @@ export default {
   name: 'app',
   data () {
     return {
+      hasInitMusic: false,
       showDialog: false,  // 显示弹窗
-      msg: '',            // 显示信息
+      msg: '未知错误',            // 显示信息
       progress: 0,
       curProgress: 0,     // 加载进度
       circleDasharray: 0, // 圆环长度
@@ -43,6 +52,20 @@ export default {
     this.preLoad()
     this.$nextTick(() => {
       this.transionTarget()
+      // 事件巴士
+      this.$bus.$on('pop-alert', text => {
+        this.showDialog = true
+        this.msg = text
+      })
+      // 开始播放背景
+      let bgMusic = document.getElementById('bg-music')
+      bgMusic && bgMusic.play()
+      // 兼容ios 的音乐
+      let fn = () => {
+        bgMusic && bgMusic.play()
+        this.$el.removeEventListener('click', fn)
+      }
+      this.$el.addEventListener('click', fn)
     })
   },
   watch: {
@@ -51,6 +74,19 @@ export default {
     }
   },
   methods: {
+    // 兼容iosios的音乐
+    tryMusic () {
+      if (this.hasInitMusic || !window.isIOS) {
+        return
+      }
+      this.hasInitMusic = true
+      let bgMusic = document.getElementById('bg-music')
+      bgMusic && bgMusic.play()
+    },
+    // 关闭全局弹窗
+    closeDialog () {
+      this.showDialog = false
+    },
     // 顺滑过渡 progress ，会通过计算属性模拟transition到达
     transionTarget () {
       if (this.curProgress >= 100) {
@@ -175,6 +211,70 @@ body {
     }
   }
 }
+ .global-dialog {
+      z-index: 99;
+      position: absolute;
+      width: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 0 3rem;
+      box-sizing: border-box;
+      font-size: 1.6rem;
+      p {
+        margin: 0;
+        padding: 0;
+      }
+      .dialog-box {
+        width: 100%;
+        border-radius: 2rem;
+        background: #fffade;
+        padding: 1rem;
+        box-sizing: border-box;
+      }
+      .close{
+        overflow: hidden;
+        // padding: 1rem;
+        box-sizing: border-box;
+      }
+      .close-btn{
+        display: inline-block;
+        text-align: center;
+        height: 2.4rem;
+        line-height: 2.4rem;
+        width: 2.4rem;
+        float: right;
+        font-size: 2.4rem;
+      }
+      .reward-name {
+        text-align: center;
+        font-size: 4rem;
+        font-weight: bold;
+        color: #960c1d;
+      }
+      .reward-name-small {
+        text-align: center;
+        font-size: 1.8rem;
+        margin: 1rem 0;
+      }
+      .operation {
+        text-align: center;
+      }
+      .operation-btn {
+        margin: 2rem 0;
+        display: inline-block;
+        font-size: 1.8rem;
+        width: 8rem;
+        height: 2.6rem;
+        line-height: 2.6rem;
+        border: 1px solid #444;
+        border-radius: 0.5rem;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .not-reward {
+        display: inline-block;
+        width: 5.7rem;
+      }
+    }
 
 @media (min-height: 668px) {
   body {
