@@ -20,7 +20,7 @@
     </div>
     <!-- 按钮面板 -->
     <div class="option-panel" >
-      <span class="start-btn" @click.prevent="$router.push({name: 'home', query: {tab: 'ruler'}})">开始游戏</span>
+      <span class="start-btn" @click.prevent="startGame()">开始游戏</span>
       <!-- <img class="logo-img" src="~@/assets/img/logo.png"> -->
       <img class="logo-img" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/logo.png">
     </div>
@@ -71,6 +71,12 @@ export default {
     clearInterval(this.eyeTimer)
   },
   methods: {
+    startGame () {
+      // 兼容ios
+      // let bgMusic = document.getElementById('bg-music')
+      // window.isIOS && bgMusic && bgMusic.play()
+      this.$router.push({name: 'home', query: {tab: 'ruler'}})
+    },
     moveEyes () {
       let eyeLeft = this.$el.querySelector('.bg-img-eye-left')
       let eyeRight = this.$el.querySelector('.bg-img-eye-right')

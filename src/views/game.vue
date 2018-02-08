@@ -160,7 +160,9 @@ export default {
       beginNum: 3,                          // 进场特效
       addTips: '',                          // 显示哪个手指
       handIn: '',                            // 手指
-      hasCheck: false                            // 是否引导国
+      hasCheck: false,                       // 是否引导国
+      rightMusic: '',                       // 选对的音乐
+      errorMusic: ''                        // 选错的音乐
     }
   },
   components: {
@@ -168,6 +170,7 @@ export default {
   },
   beforeDestroy () {
     clearInterval(this.fireworkTimer)
+    clearTimeout(this.scenceTimer)
   },
   mounted () {
     this.getKeys()
@@ -187,6 +190,11 @@ export default {
     setTimeout(() => {
       this.dropdown()
     }, 500)
+
+    // 初始化音乐
+    this.rightMusic = document.getElementById('right-music')
+    this.errorMusic = document.getElementById('error-music')
+    this.timeMusic = document.getElementById('time-music')
 
     // let winW = window.innerWidth
     // let winY = window.innerHeight * 0.45
@@ -213,6 +221,7 @@ export default {
         this.clickCount = this.clickCount > 100 ? 0 : (this.clickCount + 1)
         this.items.splice(0, 0, ele)
         this.items.splice(this.items.length - 1, 1)
+        this.playMusic('rightMusic')
         // this.score = this.score + 600
       }
       if (num === 2) {
@@ -225,13 +234,14 @@ export default {
         this.clickCount = this.clickCount > 100 ? 0 : (this.clickCount + 1)
         this.items.splice(0, 0, ele)
         this.items.splice(this.items.length - 1, 1)
+        this.playMusic('rightMusic')
         // this.score = this.score + 600
         localStorage.setItem('hasCheck', 1)
       }
       console.log('click')
     },
     countEffect () {
-      console.log(this.beginNum)
+      // console.log(this.beginNum)
       if (this.beginNum > 0) {
         this.showTextEffect = this.beginNum
         setTimeout(() => {
@@ -324,7 +334,8 @@ export default {
     renderScence () {
       this.time--
       if (this.time >= 0) {
-        setTimeout(() => {
+        this.playMusic('timeMusic')
+        this.scenceTimer = setTimeout(() => {
           this.renderScence()
         }, 1000)
       } else {
@@ -344,6 +355,13 @@ export default {
       this.time = 20
       this.score = 0
       this.lock = false
+    },
+    playMusic (type) {
+      if (this[type]) {
+        this[type].pause()
+        this[type].currentTime = 0
+        this[type].play()
+      }
     },
     update (dog) {
       if (this.addTips) {
@@ -368,9 +386,11 @@ export default {
         this.items.splice(0, 0, ele)
         this.items.splice(this.items.length - 1, 1)
         this.score = this.score + 600
+        this.playMusic('rightMusic')
       } else {
         this.lock = true
         target.clickError = true
+        this.playMusic('errorMusic')
         if (target.dog.indexOf('_error') === -1) {
           target.dog = target.dog + '_error'
         }

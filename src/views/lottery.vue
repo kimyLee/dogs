@@ -9,19 +9,23 @@
     <img class="logo-bottom-img" src="/luckydogs/static/img/logo2.png"> -->
     <!-- loterry-panel -->
     <div class="loterry-panel" v-show="!result">
-      <div v-for="item in blocks" class="block-item" :key="item.index" :class="{'turn': item.turn}">
+      <div v-for="item in blocks" class="block-item" :key="item.index" :class="{'turn': item.turn, 'selected': item.selected}">
         <!-- 正面 -->
         <div class="front block-item-page"
             :class="{'click-btn': item.index === 9, 'active': activeIndex === item.index}">
-            <div v-if="item.index === 9" class="block-text" @click.prevent="beginLoterry">
+            <div v-if="item.index === 9"
+            class="block-reward-text"
+            style="color: #fff;"
+            @click.prevent="beginLoterry">立即抽奖</div>
+            <!-- <div v-if="item.index === 9" class="block-text" @click.prevent="beginLoterry">
               <div class="block-text-top" style="height: 50%;">立即</div>
               <div class="block-text-bottom" style="height: 50%;">抽奖</div>
-            </div>
+            </div> -->
         </div>
         <!-- 背面 -->
         <div class="back block-item-page">
-          <div class="block-reward-text" :class="{'small-text': item.reward.length > 4}">
-            {{item.reward}}
+          <div class="block-reward-text small-text" >
+            {{item.reward.slice(0, 2)}}<br>{{item.reward.slice(2)}}
             <!-- <div class="block-text-top" style="height: 50%;">{{item.reward.slice(0, 2)}}</div>
             <div class="block-text-bottom" style="height: 50%;">{{item.reward.slice(2, 4)}}</div> -->
           </div>
@@ -36,7 +40,7 @@
           <p class="reward-name">{{result.reward}}</p>
           <p class="reward-name-small">恭喜您获得“滕王阁幸福家”<br>{{result.reward}}一份</p>
           <div class="operation">
-            <span class="operation-btn" @click.prevent="$router.push({name: 'info'})">填写信息</span>
+            <span class="operation-btn" @click.prevent="$router.replace({name: 'info'})">填写信息</span>
           </div>
         </div>
         <!-- 未中奖 -->
@@ -54,7 +58,6 @@
 </template>
 
 <script>
-import md5 from 'md5'
 import Qs from 'qs'
 import axios from 'axios'
 import rule from '@/components/rule'
@@ -62,21 +65,20 @@ export default {
   name: 'lottery',
   data () {
     return {
-      randomCode: '',
       isLotterying: false,
       score: '',
       result: '', // 获奖结果
       // 高档浴巾和精美雨伞是机动组
       blocks: [
-        {index: 1, turn: false, reward: '红米手机'},                  // 榜单
-        {index: 2, turn: false, reward: '高档拉杆箱'},                // 榜单
-        {index: 3, turn: false, reward: '美的电压锅'},                // 榜单
-        {index: 8, turn: false, reward: '紫光礼盒'},
-        {index: 9, turn: false, reward: '立即抽奖'},
-        {index: 4, turn: false, reward: '国味礼盒'},                  // 榜单
-        {index: 7, turn: false, reward: '瑞香礼盒'},
-        {index: 6, turn: false, reward: '谢谢参与'},
-        {index: 5, turn: false, reward: '吉品礼盒'}
+        {index: 1, turn: false, reward: '吉品新年礼', selected: false},                    // 榜单
+        {index: 2, turn: false, reward: '精美雨伞', selected: false},                // 榜单
+        {index: 3, turn: false, reward: '瑞香新年礼', selected: false},                // 榜单
+        {index: 8, turn: false, reward: '谢谢参与', selected: false},
+        {index: 9, turn: false, reward: '立即抽奖', selected: false},
+        {index: 4, turn: false, reward: '紫光新年礼', selected: false},                // 榜单
+        {index: 7, turn: false, reward: '谢谢参与', selected: false},
+        {index: 6, turn: false, reward: '谢谢参与', selected: false},
+        {index: 5, turn: false, reward: '浴巾', selected: false}
       ],
       speed: 100,
       decayIndex: 0,
@@ -101,87 +103,69 @@ export default {
     })
   },
   methods: {
-    // 抽奖前先获取随机数密文传输
-    getKeys () {
-      return axios.post('/index/getcode')
-        .then((result) => {
-          this.randomCode = md5('WBLxinchun' + result)
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    },
     beginLoterry () {
       if (this.isLotterying) {
         return
       }
       this.isLotterying = true
       this.start()
-      // 抽奖接口作为回掉
-      let fn = () => {
-        let params = Qs.stringify({
-          DrawType: 1,
-          Score: this.score
-        })
-        axios.post('/Index/GetDraw', params, {headers: { 'Content-Type': 'application/x-www-form-urlencoded' }})
-          .then((result) => {
-            let res = result.data
-            if (res.Code === 1) {
-              let data = res.Data
-              if (data.IsWin) {
-                if (!window.$rewards) {
-                  window.$rewards = []
-                }
-                window.$rewards.push(data.AwardRecord)
-                let reward = data.AwardRecord
-                // 找到抽中奖品 如果是雨伞或者浴衣
-                if (reward.AwardId === 6 || reward.AwardId === 9) {
-                  this.blocks[7].reward = reward.AwardName
-                  setTimeout(() => {
-                    this.wonIndex = 6
-                    this.stop()
-                  }, 2000)
-                } else {
-                  setTimeout(() => {
-                    this.wonIndex = reward.AwardId || 6
-                    this.stop()
-                  }, 2000)
-                }
+      console.log(this.score)
+      let params = Qs.stringify({
+        DrawType: 1,
+        Score: this.score
+      })
+      console.log(this.params)
+      axios.post('/Index/GetDraw', params, {headers: { 'Content-Type': 'application/x-www-form-urlencoded' }})
+        .then((result) => {
+          let res = result.data
+          if (res.Code === 1) {
+            let data = res.Data
+            if (data.IsWin) {
+              if (!window.$rewards) {
+                window.$rewards = []
+              }
+              window.$rewards.push(data.AwardRecord)
+              let reward = data.AwardRecord
+              // 找到抽中奖品
+              if (reward.AwardId >= 6) {
+                // this.blocks[7].reward = reward.AwardName
+                setTimeout(() => {
+                  this.wonIndex = 8
+                  this.stop()
+                }, 2000)
               } else {
                 setTimeout(() => {
-                  let index = (Math.random() * 9) << 0
-                  if (index === 4) {
-                    index = 5
-                  }
-                  this.blocks[index].reward = '谢谢参与'
-                  this.wonIndex = this.blocks[index].index
+                  this.wonIndex = reward.AwardId || 8
                   this.stop()
                 }, 2000)
               }
+              // this.blocks[1].reward = data.AwardRecord.AwardName.slice(0, 4)
+              // setTimeout(() => {
+              //   this.wonIndex = 2
+              //   this.stop()
+              // }, 2000)
             } else {
-              return Promise.reject(res)
+              setTimeout(() => {
+                // sets: 对应谢谢参与在数组的下标
+                let sets = [3, 6, 7]
+                let index = (Math.random() * 3) << 0
+                this.wonIndex = this.blocks[sets[index]].index
+                this.stop()
+              }, 2000)
             }
-          })
-          .catch((error) => {
-            console.log(error)
-            setTimeout(() => {
-              let index = (Math.random() * 9) << 0
-              if (index === 4) {
-                index = 5
-              }
-              this.blocks[index].reward = '谢谢参与'
-              this.wonIndex = this.blocks[index].index
-              this.stop()
-            }, 2000)
-          })
-      }
-      this.getKeys()
-        .then(() => {
-          fn()
+          } else {
+            return Promise.reject(res)
+          }
         })
         .catch((error) => {
           console.log(error)
-          fn()
+          setTimeout(() => {
+            // sets: 对应谢谢参与在数组的下标
+            let sets = [3, 6, 7]
+            let index = (Math.random() * 3) << 0
+            this.wonIndex = this.blocks[sets[index]].index
+            this.stop()
+          }, 2000)
         })
     },
     begin () {
@@ -292,6 +276,7 @@ export default {
       for (let i = this.blocks.length; i--;) {
         if (this.blocks[i].index === index) {
           this.blocks[i].turn = true
+          this.blocks[i].selected = true
           setTimeout(() => {
             this.result = this.blocks[i]
           }, 2000)
@@ -300,7 +285,7 @@ export default {
       }
       setTimeout(() => {
         for (let i = this.blocks.length; i--;) {
-          if (this.blocks[i].index !== 9) {
+          if (this.blocks[i].index !== 9 && this.blocks[i].index !== index) {
             this.blocks[i].turn = true
           }
         }
@@ -432,6 +417,7 @@ export default {
       position: absolute;
       width: 100%;
       text-align: center;
+      line-height: 1;
       font-size: 3.2rem;
       color: #c79f62;
       top: 50%;
@@ -493,6 +479,12 @@ export default {
     }
     .turn .back{
       transform: rotateY(360deg);
+    }
+    .turn.selected .back{
+      background: #ff0b57;
+      .block-reward-text {
+        color: #fff;
+      }
     }
   }
 </style>

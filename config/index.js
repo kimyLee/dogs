@@ -8,7 +8,7 @@ module.exports = {
   dev: {
 
     // Paths
-    assetsSubDirectory: 'luckydogs/static',
+    assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
       '/Index/GetDraw': {
