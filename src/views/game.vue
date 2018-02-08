@@ -117,6 +117,7 @@
 </template>
 
 <script>
+import md5 from 'md5'
 import Qs from 'qs'
 import axios from 'axios'
 import rule from '@/components/rule'
@@ -139,6 +140,7 @@ export default {
   name: 'game',
   data () {
     return {
+      randomCode: '',
       appear: false,
       dogs: ['fudog', 'ludog', 'shoudog', 'xidog'],
       items: [],
@@ -168,6 +170,7 @@ export default {
     clearInterval(this.fireworkTimer)
   },
   mounted () {
+    this.getKeys()
     // 初始化开始
     setTimeout(() => {
       this.countEffect()
@@ -276,20 +279,42 @@ export default {
         requestAnimationFrame(this.dropdown)
       }
     },
-    updateScore () {
-      let params = Qs.stringify({
-        score: this.score
-      })
-      axios.post('/Index/SaveScore', params, {headers: { 'Content-Type': 'application/x-www-form-urlencoded' }})
+    // 保存分数前先获取随机数密文传输
+    getKeys () {
+      return axios.post('/index/getcode')
         .then((result) => {
-          let res = result.data
-          if (res.Code === 1) {
-          } else {
-            return Promise.reject(res)
-          }
+          this.randomCode = md5('WBLxinchun' + result)
         })
         .catch((error) => {
           console.log(error)
+        })
+      // console.log(md5('message'))
+    },
+    updateScore () {
+      let fn = () => {
+        let params = Qs.stringify({
+          score: this.score,
+          sign: this.randomCode
+        })
+        axios.post('/Index/SaveScore', params, {headers: { 'Content-Type': 'application/x-www-form-urlencoded' }})
+          .then((result) => {
+            let res = result.data
+            if (res.Code === 1) {
+            } else {
+              return Promise.reject(res)
+            }
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      }
+      this.getKeys()
+        .then(() => {
+          fn()
+        })
+        .catch((error) => {
+          console.log(error)
+          fn()
         })
     },
     jumpLottery () {

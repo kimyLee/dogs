@@ -54,6 +54,7 @@
 </template>
 
 <script>
+import md5 from 'md5'
 import Qs from 'qs'
 import axios from 'axios'
 import rule from '@/components/rule'
@@ -61,6 +62,7 @@ export default {
   name: 'lottery',
   data () {
     return {
+      randomCode: '',
       isLotterying: false,
       score: '',
       result: '', // 获奖结果
@@ -99,73 +101,87 @@ export default {
     })
   },
   methods: {
+    // 抽奖前先获取随机数密文传输
+    getKeys () {
+      return axios.post('/index/getcode')
+        .then((result) => {
+          this.randomCode = md5('WBLxinchun' + result)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
     beginLoterry () {
       if (this.isLotterying) {
         return
       }
       this.isLotterying = true
       this.start()
-      console.log(this.score)
-      let params = Qs.stringify({
-        DrawType: 1,
-        Score: this.score
-      })
-      console.log(this.params)
-      axios.post('/Index/GetDraw', params, {headers: { 'Content-Type': 'application/x-www-form-urlencoded' }})
-        .then((result) => {
-          let res = result.data
-          if (res.Code === 1) {
-            let data = res.Data
-            if (data.IsWin) {
-              if (!window.$rewards) {
-                window.$rewards = []
-              }
-              window.$rewards.push(data.AwardRecord)
-              let reward = data.AwardRecord
-              // 找到抽中奖品 如果是雨伞或者浴衣
-              if (reward.AwardId === 6 || reward.AwardId === 9) {
-                this.blocks[7].reward = reward.AwardName
-                setTimeout(() => {
-                  this.wonIndex = 6
-                  this.stop()
-                }, 2000)
+      // 抽奖接口作为回掉
+      let fn = () => {
+        let params = Qs.stringify({
+          DrawType: 1,
+          Score: this.score
+        })
+        axios.post('/Index/GetDraw', params, {headers: { 'Content-Type': 'application/x-www-form-urlencoded' }})
+          .then((result) => {
+            let res = result.data
+            if (res.Code === 1) {
+              let data = res.Data
+              if (data.IsWin) {
+                if (!window.$rewards) {
+                  window.$rewards = []
+                }
+                window.$rewards.push(data.AwardRecord)
+                let reward = data.AwardRecord
+                // 找到抽中奖品 如果是雨伞或者浴衣
+                if (reward.AwardId === 6 || reward.AwardId === 9) {
+                  this.blocks[7].reward = reward.AwardName
+                  setTimeout(() => {
+                    this.wonIndex = 6
+                    this.stop()
+                  }, 2000)
+                } else {
+                  setTimeout(() => {
+                    this.wonIndex = reward.AwardId || 6
+                    this.stop()
+                  }, 2000)
+                }
               } else {
                 setTimeout(() => {
-                  this.wonIndex = reward.AwardId || 6
+                  let index = (Math.random() * 9) << 0
+                  if (index === 4) {
+                    index = 5
+                  }
+                  this.blocks[index].reward = '谢谢参与'
+                  this.wonIndex = this.blocks[index].index
                   this.stop()
                 }, 2000)
               }
-              // this.blocks[1].reward = data.AwardRecord.AwardName.slice(0, 4)
-              // setTimeout(() => {
-              //   this.wonIndex = 2
-              //   this.stop()
-              // }, 2000)
             } else {
-              setTimeout(() => {
-                let index = (Math.random() * 9) << 0
-                if (index === 4) {
-                  index = 5
-                }
-                this.blocks[index].reward = '谢谢参与'
-                this.wonIndex = this.blocks[index].index
-                this.stop()
-              }, 2000)
+              return Promise.reject(res)
             }
-          } else {
-            return Promise.reject(res)
-          }
+          })
+          .catch((error) => {
+            console.log(error)
+            setTimeout(() => {
+              let index = (Math.random() * 9) << 0
+              if (index === 4) {
+                index = 5
+              }
+              this.blocks[index].reward = '谢谢参与'
+              this.wonIndex = this.blocks[index].index
+              this.stop()
+            }, 2000)
+          })
+      }
+      this.getKeys()
+        .then(() => {
+          fn()
         })
         .catch((error) => {
           console.log(error)
-          setTimeout(() => {
-            let index = (Math.random() * 9) << 0
-            if (index === 4) {
-              index = 5
-            }
-            this.blocks[index].reward = '谢谢参与'
-            this.wonIndex = this.blocks[index].index
-            this.stop()
-          }, 2000)
+          fn()
         })
     },
     begin () {
