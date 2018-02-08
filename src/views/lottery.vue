@@ -13,15 +13,19 @@
         <!-- 正面 -->
         <div class="front block-item-page"
             :class="{'click-btn': item.index === 9, 'active': activeIndex === item.index}">
-            <div v-if="item.index === 9" class="block-text" @click.prevent="beginLoterry">
+            <div v-if="item.index === 9"
+            class="block-reward-text"
+            style="color: #fff;"
+            @click.prevent="beginLoterry">立即抽奖</div>
+            <!-- <div v-if="item.index === 9" class="block-text" @click.prevent="beginLoterry">
               <div class="block-text-top" style="height: 50%;">立即</div>
               <div class="block-text-bottom" style="height: 50%;">抽奖</div>
-            </div>
+            </div> -->
         </div>
         <!-- 背面 -->
         <div class="back block-item-page">
-          <div class="block-reward-text" :class="{'small-text': item.reward.length > 4}">
-            {{item.reward}}
+          <div class="block-reward-text small-text" >
+            {{item.reward.slice(0, 2)}}<br>{{item.reward.slice(2)}}
             <!-- <div class="block-text-top" style="height: 50%;">{{item.reward.slice(0, 2)}}</div>
             <div class="block-text-bottom" style="height: 50%;">{{item.reward.slice(2, 4)}}</div> -->
           </div>
@@ -36,7 +40,7 @@
           <p class="reward-name">{{result.reward}}</p>
           <p class="reward-name-small">恭喜您获得“滕王阁幸福家”<br>{{result.reward}}一份</p>
           <div class="operation">
-            <span class="operation-btn" @click.prevent="$router.push({name: 'info'})">填写信息</span>
+            <span class="operation-btn" @click.prevent="$router.replace({name: 'info'})">填写信息</span>
           </div>
         </div>
         <!-- 未中奖 -->
@@ -66,15 +70,15 @@ export default {
       result: '', // 获奖结果
       // 高档浴巾和精美雨伞是机动组
       blocks: [
-        {index: 1, turn: false, reward: '浴巾', selected: false},                    // 榜单
-        {index: 2, turn: false, reward: '谢谢参与', selected: false},                // 榜单
-        {index: 3, turn: false, reward: '谢谢参与', selected: false},                // 榜单
-        {index: 8, turn: false, reward: '紫光礼盒', selected: false},
+        {index: 1, turn: false, reward: '吉品新年礼', selected: false},                    // 榜单
+        {index: 2, turn: false, reward: '精美雨伞', selected: false},                // 榜单
+        {index: 3, turn: false, reward: '瑞香新年礼', selected: false},                // 榜单
+        {index: 8, turn: false, reward: '谢谢参与', selected: false},
         {index: 9, turn: false, reward: '立即抽奖', selected: false},
-        {index: 4, turn: false, reward: '谢谢参与', selected: false},                // 榜单
-        {index: 7, turn: false, reward: '瑞香礼盒', selected: false},
-        {index: 6, turn: false, reward: '精美雨伞', selected: false},
-        {index: 5, turn: false, reward: '吉品礼盒', selected: false}
+        {index: 4, turn: false, reward: '紫光新年礼', selected: false},                // 榜单
+        {index: 7, turn: false, reward: '谢谢参与', selected: false},
+        {index: 6, turn: false, reward: '谢谢参与', selected: false},
+        {index: 5, turn: false, reward: '浴巾', selected: false}
       ],
       speed: 100,
       decayIndex: 0,
@@ -122,16 +126,16 @@ export default {
               }
               window.$rewards.push(data.AwardRecord)
               let reward = data.AwardRecord
-              // 找到抽中奖品 如果是浴衣
-              if (reward.AwardId === 9) {
+              // 找到抽中奖品
+              if (reward.AwardId >= 6) {
                 // this.blocks[7].reward = reward.AwardName
                 setTimeout(() => {
-                  this.wonIndex = 1
+                  this.wonIndex = 8
                   this.stop()
                 }, 2000)
               } else {
                 setTimeout(() => {
-                  this.wonIndex = reward.AwardId || 2
+                  this.wonIndex = reward.AwardId || 8
                   this.stop()
                 }, 2000)
               }
@@ -142,12 +146,10 @@ export default {
               // }, 2000)
             } else {
               setTimeout(() => {
-                let index = (Math.random() * 9) << 0
-                if (index === 4) {
-                  index = 5
-                }
-                this.blocks[index].reward = '谢谢参与'
-                this.wonIndex = this.blocks[index].index
+                // sets: 对应谢谢参与在数组的下标
+                let sets = [3, 6, 7]
+                let index = (Math.random() * 3) << 0
+                this.wonIndex = this.blocks[sets[index]].index
                 this.stop()
               }, 2000)
             }
@@ -158,12 +160,10 @@ export default {
         .catch((error) => {
           console.log(error)
           setTimeout(() => {
-            let index = (Math.random() * 9) << 0
-            if (index === 4) {
-              index = 5
-            }
-            this.blocks[index].reward = '谢谢参与'
-            this.wonIndex = this.blocks[index].index
+            // sets: 对应谢谢参与在数组的下标
+            let sets = [3, 6, 7]
+            let index = (Math.random() * 3) << 0
+            this.wonIndex = this.blocks[sets[index]].index
             this.stop()
           }, 2000)
         })
@@ -417,6 +417,7 @@ export default {
       position: absolute;
       width: 100%;
       text-align: center;
+      line-height: 1;
       font-size: 3.2rem;
       color: #c79f62;
       top: 50%;

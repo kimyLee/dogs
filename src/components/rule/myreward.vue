@@ -9,7 +9,7 @@
      <p v-show="!rewards.length" class="no-reward">还没获得奖品哦<br>多多努力赢取大奖吧</p>
       <div class="start-panel">
       <router-link class="btn-link" :class="{'empty': $route.name !== 'game'}" :to="{name: $route.name}" @click.prevent.stop>返回</router-link>
-      <router-link class="btn-link" v-show="$route.name !== 'game'" :to="{name: 'game'}" @click.prevent.stop><span style="">GO</span></router-link>
+      <router-link class="btn-link" v-show="$route.name !== 'game'" :to="{name: 'game'}" @click.prevent.stop><span style="">开始</span></router-link>
     </div>
   </div>
 </template>

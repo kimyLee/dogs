@@ -24,8 +24,8 @@
         </ul>
     </div>
      <div class="start-panel">
-      <router-link class="btn-link" :class="{'empty': $route.name !== 'game'}" :to="{name: $route.name}" @click.prevent.stop>返回</router-link>
-      <router-link class="btn-link" v-show="$route.name !== 'game'" :to="{name: 'game'}" @click.prevent.stop><span style="">GO</span></router-link>
+      <router-link class="btn-link empty" :to="{name: $route.name}" @click.prevent.stop>返回</router-link>
+      <span class="btn-link"  @click.prevent.stop="openShare" ><span style="">求PK</span></span>
     </div>
   </div>
 </template>
@@ -74,6 +74,9 @@ export default {
     this.getRewardInfo()
   },
   methods: {
+    openShare () {
+      this.$bus.$emit('pop-share')
+    },
     // 获取个人信息
     getRewardInfo () {
       axios.post('/Index/UserRecord')

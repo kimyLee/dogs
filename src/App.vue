@@ -13,10 +13,10 @@
     </div>
     <router-view v-if="curProgress >= 100"/>
     <!-- 音频加载 -->
-    <audio id="bg-music" src="/static/music/bg.mp3" preload loop></audio>
-    <audio id="right-music" src="/static/music/right.mp3" preload></audio>
-    <audio id="error-music" src="/static/music/error.mp3" preload></audio>
-    <audio id="time-music" src="/static/music/time.mp3" preload></audio>
+    <audio id="bg-music" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/music/bg.mp3" preload loop></audio>
+    <audio id="right-music" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/music/right.mp3" preload></audio>
+    <audio id="error-music" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/music/error.mp3" preload></audio>
+    <audio id="time-music" src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/music/time.mp3" preload></audio>
     <!-- 全局弹窗 -->
     <div class="global-dialog" v-show="showDialog">
       <div class="dialog-box">
@@ -30,6 +30,10 @@
         </div>
       </div>
     </div>
+    <!-- 全局分享弹窗 -->
+    <div class="global-share" v-show="showShare" @click="showShare = false">
+      <img src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/share.png">
+    </div>
   </div>
 </template>
 
@@ -38,6 +42,7 @@ export default {
   name: 'app',
   data () {
     return {
+      showShare: false,
       hasInitMusic: false,
       showDialog: false,  // 显示弹窗
       msg: '未知错误',            // 显示信息
@@ -56,6 +61,9 @@ export default {
       this.$bus.$on('pop-alert', text => {
         this.showDialog = true
         this.msg = text
+      })
+      this.$bus.$on('pop-share', text => {
+        this.showShare = true
       })
       // 开始播放背景
       let bgMusic = document.getElementById('bg-music')
@@ -186,7 +194,18 @@ body {
   width: 100%;
   height: 100%;
 }
-
+.global-share {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  width: 100%;
+  height: 100%;
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}
 .loading {
   position: fixed;
   background: #fff;
