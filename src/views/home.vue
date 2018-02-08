@@ -75,6 +75,7 @@ export default {
       // 兼容ios
       // let bgMusic = document.getElementById('bg-music')
       // window.isIOS && bgMusic && bgMusic.play()
+      // document.getElementById('time-music').play()
       this.$router.push({name: 'home', query: {tab: 'ruler'}})
     },
     moveEyes () {

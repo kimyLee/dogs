@@ -12,8 +12,8 @@
         <span class="input-item"><span class="input-item-title">电话</span><input type="text"  v-model="phone" /></span>
         <span class="input-item"><span class="input-item-title">地址</span><input type="text"  v-model="address" /></span>
         <div style="text-align: center">
-          <span class="submit-btn" @click.prevent="goback" >返回</span>
-          <span class="submit-btn" v-show="!hasChange" @click.prevent="subMit" style="margin-left: 2rem">提交</span>
+          <span class="submit-btn" v-show="showReback"  @click.prevent="goback" style="margin-right: 1rem">返回</span>
+          <span class="submit-btn" v-show="!hasChange" @click.prevent="subMit">提交</span>
         </div>
     </div>
     <!-- 保存成功弹窗 -->
@@ -38,12 +38,21 @@ export default {
   name: 'info',
   data () {
     return {
+      showReback: true,
       target: {},
       name: '',
       phone: '',
       address: '',
       hasChange: false     // 是否留资
     }
+  },
+  beforeRouteEnter: (to, from, next) => {
+    next(vm => {
+      // console.log(from, from.name, 233)
+      if (from.name === 'lottery') {
+        vm.$data.showReback = false
+      }
+    })
   },
   mounted () {
     this.$nextTick(() => {

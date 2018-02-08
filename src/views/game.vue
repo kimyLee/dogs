@@ -91,23 +91,34 @@
         <span class="dialog-head-text">{{score}}<span style="font-size: 1.4rem">&nbsp;分</span></span>
       </div>
       <!-- 成功 -->
-      <div class="dialog-box" v-show="score >= 8000">
+      <div class="dialog-box" v-show="canDraw && score >= 20000">
         <!-- <p class="dialog-rank">全国排名 30</p> -->
         <!-- <img class="loterry-button" @click.prevent="$router.push({name: 'lottery'})" src="/luckydogs/static/img/loterryBtn.png"> -->
         <div @click="jumpLottery" class="loterry-button-hover"><img class="loterry-button"  src="http://pandora-project.oss-cn-shenzhen.aliyuncs.com/AdorableDog/static/img/loterryBtn.png"></div>
         <div class="button-panel">
           <!-- <span class="dialog-btn share">分享</span> -->
           <span class="dialog-btn rank-list" @click.prevent="$router.push({name: $route.name, query: {tab: 'rank'}})">排行榜</span>
+          <span class="dialog-btn rank-list" @click.prevent="openShare" style="font-size: 1.6rem">求PK</span>
+        </div>
+      </div>
+      <!-- 成功但抽奖次数用完 -->
+      <div class="dialog-box" v-show="!canDraw && score >= 20000">
+        <p class="dialog-fail no-chance" >您今天的抽奖机会已用完。<br>每人每天有两次抽奖机会，请明天继续加油喔。</p>
+        <div class="button-panel">
+          <span class="dialog-btn rank-list" @click.prevent="openShare" style="font-size: 1.6rem">求PK</span>
+          <span class="dialog-btn rank-list" @click.prevent="$router.push({name: 'home'})" style="font-size: 1.6rem">返回首页</span>
+          <span class="dialog-btn rank-list" @click.prevent="$router.push({name: $route.name, query: {tab: 'rank'}})">排行榜</span>
         </div>
       </div>
       <!-- 失败 -->
-      <div class="dialog-box" v-show="score < 8000">
+      <div class="dialog-box" v-show="score < 20000">
         <p class="dialog-fail">挑战失败</p>
         <p class="dialog-fail small" >不要灰心，继续努力哦</p>
         <div class="button-panel">
           <!-- <span class="dialog-btn share">分享</span> -->
           <span class="dialog-btn" @click.prevent="$router.push({name: $route.name, query: {tab: 'rank'}})">排行榜</span><br>
-          <span class="dialog-btn rank-list" @click.prevent="restart" style="font-size: 1.6rem">再来一局</span>
+          <span class="dialog-btn rank-list" @click.prevent="restart" style="font-size: 1.6rem">再来一局</span><br>
+          <span class="dialog-btn rank-list" @click.prevent="openShare" style="font-size: 1.6rem">求PK</span>
         </div>
       </div>
     </div>
@@ -141,6 +152,7 @@ export default {
   data () {
     return {
       randomCode: '',
+      canDraw: true,  // 是否有抽奖机会
       appear: false,
       dogs: ['fudog', 'ludog', 'shoudog', 'xidog'],
       items: [],
@@ -173,7 +185,7 @@ export default {
     clearTimeout(this.scenceTimer)
   },
   mounted () {
-    this.getKeys()
+    // this.getKeys()
     // 初始化开始
     setTimeout(() => {
       this.countEffect()
@@ -208,6 +220,26 @@ export default {
     }, 1000)
   },
   methods: {
+    // 获取剩余抽奖次数
+    getDrawTime () {
+      return axios.post('/Index/UserRecord')
+        .then((result) => {
+          let res = result.data
+          if (res.Code === 1) {
+            let data = res.Data
+            this.canDraw = data.DrawNum > 0
+          } else {
+            return Promise.reject(res)
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+    // 打开分享
+    openShare () {
+      this.$bus.$emit('pop-share')
+    },
     // 引导点击了按钮
     directClick (num) {
       if (num === 1) {
@@ -236,7 +268,7 @@ export default {
         this.items.splice(this.items.length - 1, 1)
         this.playMusic('rightMusic')
         // this.score = this.score + 600
-        localStorage.setItem('hasCheck', 1)
+        localStorage.setItem('hasClick', 1)
       }
       console.log('click')
     },
@@ -245,6 +277,7 @@ export default {
       if (this.beginNum > 0) {
         this.showTextEffect = this.beginNum
         setTimeout(() => {
+          this.playMusic('timeMusic')
           this.showTextEffect = ''
         }, 500)
         setTimeout(() => {
@@ -254,10 +287,12 @@ export default {
       } else {
         this.showTextEffect = 'GO'
         setTimeout(() => {
+          this.playMusic('timeMusic')
           this.showTextEffect = ''
           this.beginNum--
           // 触发提示
-          this.hasCheck = !!(localStorage.getItem('hasCheck') - 0)
+          this.hasCheck = !!(localStorage.getItem('hasClick') - 0)
+          // this.hasCheck = false
           if (!this.hasCheck) {
             this.addTips = 1
             setTimeout(() => {
@@ -345,8 +380,17 @@ export default {
     },
     gameOver () {
       this.lock = true
-      this.showDialog = true
-      this.updateScore()
+      this.getDrawTime()
+        .then(() => {
+          this.showDialog = true
+          this.updateScore()
+        })
+        .catch(() => {
+          this.showDialog = true
+          this.updateScore()
+        })
+      // this.showDialog = true
+      // this.updateScore()
       // alert('游戏结束，你获得了' + this.score + '分')
     },
     restart () {
@@ -537,6 +581,11 @@ export default {
         padding: 5rem 0 0 0;
         font-size: 2.2rem;
         color: #444;
+        &.no-chance {
+           padding: 4rem 1rem 2rem 1rem;
+            font-size: 1.8rem;
+            // text-align: left;
+        }
         &.small {
           padding: 1rem 0 4rem 0;
           font-size: 1.8rem;
@@ -703,6 +752,7 @@ export default {
         top: 14%;
         left: 14%;
         border-radius:50%;
+        opacity: 0;
         // margin-top: 1.2rem;
         // margin-left: 0.7rem;
         &.w1 {

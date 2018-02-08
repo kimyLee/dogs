@@ -2,16 +2,16 @@
   <div class="ruler-intro">
     <p>1、根据萌犬的不同颜色，依次选择对应颜色的福禄寿喜。</p>
     <p>2、选择匹配的正确颜色越多，分数越多，加油吧！</p>
-    <p>3、单次8000分以上可获得一次抽奖机会，中奖后填写寄送信息，每人每天仅仅可抽奖2次，奖品丰厚，数量有限，加油冲分吧！</p>
-    <p>4、活动结束后，将为全国排名前二十位寄送丰厚礼品。<br>
+    <p>3、达到20000分即可参与抽奖，每人每天仅可抽奖2次，中奖后请记得填写寄送信息哦。奖品丰厚，数量有限，加油冲分吧！</p>
+    <p>4、活动结束后，排行榜前20名将获得以下丰厚礼品：<br>
     <span class="orange-text">第1名：红米手机 1台</span><br>
     <span class="orange-text">第2名：高档压杆箱 1个</span><br>
     <span class="orange-text">第3名：美的电压力锅 1套</span><br>
-    <span class="orange-text">1~20名榜单奖：国味礼盒1份</span>
+    <span class="orange-text">1~20名榜单奖：国味新年礼1份</span>
     </p>
     <p>活动时间：<br>
-    <span class="orange-text">2018年2月5日—2月10日</span>
-    </p>
+    <span class="orange-text">2018年2月5日—2月10日</span><br>
+    <p>为给您更好的游戏体验，每日游戏开启时间为：<span class="orange-text">7：00—23：59</span></p>
     <p>本活动最终解释权归主办方所有。</p>
     <div class="start-panel">
       <router-link class="btn-link" :class="{'empty': $route.name !== 'game'}" :to="{name: $route.name}" @click.prevent.stop>返回</router-link>
