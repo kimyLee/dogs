@@ -58,6 +58,7 @@
 </template>
 
 <script>
+import md5 from 'md5'
 import Qs from 'qs'
 import axios from 'axios'
 import rule from '@/components/rule'
@@ -65,6 +66,7 @@ export default {
   name: 'lottery',
   data () {
     return {
+      randomCode: '',
       isLotterying: false,
       score: '',
       result: '', // 获奖结果
@@ -103,69 +105,90 @@ export default {
     })
   },
   methods: {
+    // 保存分数前先获取随机数密文传输
+    getKeys () {
+      return axios.post('/index/getcode')
+        .then((result) => {
+          let res = result.data
+          this.randomCode = md5('MenggouPandora' + res)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+      // console.log(md5('message'))
+    },
     beginLoterry () {
       if (this.isLotterying) {
         return
       }
       this.isLotterying = true
       this.start()
-      console.log(this.score)
-      let params = Qs.stringify({
-        DrawType: 1,
-        Score: this.score
-      })
-      console.log(this.params)
-      axios.post('/Index/GetDraw', params, {headers: { 'Content-Type': 'application/x-www-form-urlencoded' }})
-        .then((result) => {
-          let res = result.data
-          if (res.Code === 1) {
-            let data = res.Data
-            if (data.IsWin) {
-              if (!window.$rewards) {
-                window.$rewards = []
-              }
-              window.$rewards.push(data.AwardRecord)
-              let reward = data.AwardRecord
-              // 找到抽中奖品
-              if (reward.AwardId >= 6) {
-                // this.blocks[7].reward = reward.AwardName
-                setTimeout(() => {
-                  this.wonIndex = 8
-                  this.stop()
-                }, 2000)
+      let fn = () => {
+        let params = Qs.stringify({
+          DrawType: 1,
+          Score: this.score,
+          sign: this.randomCode
+        })
+        axios.post('/Index/GetDraw', params, {headers: { 'Content-Type': 'application/x-www-form-urlencoded' }})
+          .then((result) => {
+            let res = result.data
+            if (res.Code === 1) {
+              let data = res.Data
+              if (data.IsWin) {
+                if (!window.$rewards) {
+                  window.$rewards = []
+                }
+                window.$rewards.push(data.AwardRecord)
+                let reward = data.AwardRecord
+                // 找到抽中奖品
+                if (reward.AwardId >= 6) {
+                  // this.blocks[7].reward = reward.AwardName
+                  setTimeout(() => {
+                    this.wonIndex = 8
+                    this.stop()
+                  }, 2000)
+                } else {
+                  setTimeout(() => {
+                    this.wonIndex = reward.AwardId || 8
+                    this.stop()
+                  }, 2000)
+                }
+                // this.blocks[1].reward = data.AwardRecord.AwardName.slice(0, 4)
+                // setTimeout(() => {
+                //   this.wonIndex = 2
+                //   this.stop()
+                // }, 2000)
               } else {
                 setTimeout(() => {
-                  this.wonIndex = reward.AwardId || 8
+                  // sets: 对应谢谢参与在数组的下标
+                  let sets = [3, 6, 7]
+                  let index = (Math.random() * 3) << 0
+                  this.wonIndex = this.blocks[sets[index]].index
                   this.stop()
                 }, 2000)
               }
-              // this.blocks[1].reward = data.AwardRecord.AwardName.slice(0, 4)
-              // setTimeout(() => {
-              //   this.wonIndex = 2
-              //   this.stop()
-              // }, 2000)
             } else {
-              setTimeout(() => {
-                // sets: 对应谢谢参与在数组的下标
-                let sets = [3, 6, 7]
-                let index = (Math.random() * 3) << 0
-                this.wonIndex = this.blocks[sets[index]].index
-                this.stop()
-              }, 2000)
+              return Promise.reject(res)
             }
-          } else {
-            return Promise.reject(res)
-          }
+          })
+          .catch((error) => {
+            console.log(error)
+            setTimeout(() => {
+              // sets: 对应谢谢参与在数组的下标
+              let sets = [3, 6, 7]
+              let index = (Math.random() * 3) << 0
+              this.wonIndex = this.blocks[sets[index]].index
+              this.stop()
+            }, 2000)
+          })
+      }
+      this.getKeys()
+        .then(() => {
+          fn()
         })
         .catch((error) => {
           console.log(error)
-          setTimeout(() => {
-            // sets: 对应谢谢参与在数组的下标
-            let sets = [3, 6, 7]
-            let index = (Math.random() * 3) << 0
-            this.wonIndex = this.blocks[sets[index]].index
-            this.stop()
-          }, 2000)
+          fn()
         })
     },
     begin () {

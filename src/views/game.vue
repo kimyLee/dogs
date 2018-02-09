@@ -328,7 +328,8 @@ export default {
     getKeys () {
       return axios.post('/index/getcode')
         .then((result) => {
-          this.randomCode = md5('WBLxinchun' + result)
+          let res = result.data
+          this.randomCode = md5('MenggouPandora' + res)
         })
         .catch((error) => {
           console.log(error)
